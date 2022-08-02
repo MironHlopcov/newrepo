@@ -239,7 +239,7 @@ namespace NavigationDrawerStarter.Fragments
         #region OKClearButton
         private void Btn_Ok_Click(object sender, EventArgs e)
         {
-            FilredResultList = new FilterItems(searchView.Query, new[] { date_text_edit1.Text, date_text_edit2.Text }, listAdapter);
+          //  FilredResultList = new FilterItems(searchView.Query, new[] { date_text_edit1.Text, date_text_edit2.Text }, listAdapter);
             OnSetFilters(this, e);
         }
         private void Btn_Clear_Click(object sender, EventArgs e)

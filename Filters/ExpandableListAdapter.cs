@@ -131,8 +131,9 @@ namespace NavigationDrawerStarter.Filters
             chekBox.Click += Child_ChekBox_Click;
 
             txtHeader.Text = groupItem.Value[childPosition].Name;
-            txtHeader.SetTextColor(Android.Graphics.Color.ParseColor("#ff000000"));
+            //txtHeader.SetTextColor(Android.Graphics.Color.ParseColor("#ff4891"));
 
+           
             return convertView;
         }
 
@@ -150,6 +151,9 @@ namespace NavigationDrawerStarter.Filters
                 grItem.Key.IsCheked = true;
             else
                 grItem.Key.IsCheked = false;
+
+           
+
             this.NotifyDataSetChanged();
         }
 

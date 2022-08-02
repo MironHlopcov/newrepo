@@ -31,7 +31,8 @@
         android:layout_marginEnd="-64dp"
         android:layout_marginRight="-64dp"
         android:layout_gravity="end"
-        android:fitsSystemWindows="true"
+        
+        android:fitsSystemWindows="false"
         app:menu="@menu/activity_main_drawer2">
 
         <FrameLayout

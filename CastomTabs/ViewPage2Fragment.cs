@@ -67,42 +67,45 @@ namespace NavigationDrawerStarter
 
             public void OnItemClick(AdapterView parent, View view, int position, long id)
             {
+                #region PlotView
                 LayoutInflater inflater = Activity.LayoutInflater;
                 var plot_layout = inflater.Inflate(Resource.Layout.plot_layout, null);
                 var plotView = plot_layout.FindViewById<PlotView>(Resource.Id.plot_view);
-
+                #endregion
+                #region Total
                 var totalSummText = plot_layout.FindViewById<TextView>(Resource.Id.TotalSummTextView);
                 var totalTransText = plot_layout.FindViewById<TextView>(Resource.Id.TotalTransactionTextView);
                 var totalSummMccText = plot_layout.FindViewById<TextView>(Resource.Id.TotalMccCodeTextView);
                 var totalTransMccText = plot_layout.FindViewById<TextView>(Resource.Id.TotalTransactionMccTextView);
-
+                #endregion
+                #region Recurring
                 var selectedItem = ListData[position];
                 var recurringDiscrCount = ListData.Where(x => x.Descripton == selectedItem.Descripton).Count();
                 var recurringDiscrSumm = ListData.Where(x => x.Descripton == selectedItem.Descripton).Select(x => x.Sum).Sum();
                 var recurringMccCount = ListData.Where(x => x.MCC == selectedItem.MCC).Count();
                 var recurringMccSumm = ListData.Where(x => x.MCC == selectedItem.MCC).Select(x => x.Sum).Sum();
-
+                #endregion
+                #region Share
                 float shareOfTransactions = (float)recurringDiscrCount / ListData.Count * 100;
                 float shareOfSumms = recurringDiscrSumm / ListData.Select(x => x.Sum).Sum() * 100;
                 float shareOfMccTransactions = (float)recurringMccCount / ListData.Count * 100;
                 float shareOfMccSumms = recurringMccSumm / ListData.Select(x => x.Sum).Sum() * 100;
-
+                #endregion
+                #region Color
                 totalSummText.SetTextColor(Android.Graphics.Color.Rgb(ColorSum[0], ColorSum[1], ColorSum[2]));
                 totalTransText.SetTextColor(Android.Graphics.Color.Rgb(ColorTransCount[0], ColorTransCount[1], ColorTransCount[2]));
                 totalSummMccText.SetTextColor(Android.Graphics.Color.Rgb(ColorSumMcc[0], ColorSumMcc[1], ColorSumMcc[2]));
                 totalTransMccText.SetTextColor(Android.Graphics.Color.Rgb(ColorCountMcc[0], ColorCountMcc[1], ColorCountMcc[2]));
-
+                #endregion
+                #region SetTextView
                 totalSummText.Text = $"Сумма транзакций \"{selectedItem.Descripton}\": \r{recurringDiscrSumm} ({(shareOfSumms > 0.099 ? string.Format("{0:N0}", shareOfSumms) : "<0,01")}%)";
                 totalTransText.Text = $"Количество - {recurringDiscrCount} ({(shareOfTransactions > 0.099 ? string.Format("{0:N0}", shareOfTransactions) : "<0,01")}%)";
                 totalSummMccText.Text = $"Сумма транзакций по категории \"{selectedItem.MccDeskription}\": \r{recurringMccSumm} ({(shareOfMccSumms > 0.099 ? string.Format("{0:N0}", shareOfMccSumms) : "<0,01")}%)";
                 totalTransMccText.Text = $"Количество транзакций по данной категории - {recurringMccCount} ({(shareOfMccTransactions > 0.099 ? string.Format("{0:N0}", shareOfMccTransactions) : "<0,01")}%)";
-               
-
+                #endregion
 
                 plotView.Model = CreatePlotModel2(selectedItem.Descripton, shareOfSumms, shareOfTransactions, shareOfMccSumms, shareOfMccTransactions);
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity);
-
                 builder.SetCancelable(false);
                 builder.SetIcon(Resource.Drawable.abc_ic_go_search_api_material);
                 builder.SetView(plot_layout);
@@ -113,13 +116,21 @@ namespace NavigationDrawerStarter
                 builder.Create();
                 builder.Show();
             }
+            public void OnItemClick1(AdapterView parent, View view, int position, long id)
+            {
+                var dialog = new SelectItemDialog(ListData[position]);
+                dialog.EditItemChange += (sender, e) => {
+                    DataAdapter.NotifyDataSetChanged();
+                    dialog.Dismiss();
+                };
+                dialog.Display(Activity.SupportFragmentManager);
+            }
 
             public bool OnItemLongClick(AdapterView parent, View view, int position, long id)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity);
                 builder.SetTitle(ListData[position].Descripton);
                 builder.SetMessage(" Выберите действие");
-               
                 builder.SetCancelable(false);
                 builder.SetPositiveButton("Редактировать", (c, ev) =>
                 {
@@ -129,15 +140,12 @@ namespace NavigationDrawerStarter
                         dialog.Dismiss();
                     };
                     dialog.Display(Activity.SupportFragmentManager);
-
                     builder.Dispose();
                 });
                 builder.SetNegativeButton("Удалить", (c, ev) =>
                 {
                     DatesRepositorio.DeleteItem(ListData[position]);
                     DataAdapter.NotifyDataSetChanged();
-
-
                 });
                 builder.SetNeutralButton("Отмена", (c, ev) =>
                 {
@@ -223,8 +231,6 @@ namespace NavigationDrawerStarter
 
 
             }
-
-          
         }
     }
 

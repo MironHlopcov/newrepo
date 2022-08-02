@@ -33,6 +33,7 @@ namespace NavigationDrawerStarter
     {
         DrawerLayout drawer;
         RightMenu _RightMenu;
+        RightMenuNew _RightMenuNew;
         RightMenuT<DataItem> _RightMenuT;
 
         private static int[] tabIcons;
@@ -293,13 +294,148 @@ namespace NavigationDrawerStarter
                     _RightMenu.AddChekFilterItem("MCC код", DatesRepositorio.DataItems.Select(x => x.MCC.ToString()).Distinct().ToList());
                     _RightMenu.AddChekFilterItem("MCC описание", DatesRepositorio.DataItems.Select(x => x.MccDeskription?.ToString()).Distinct().ToList());
 
-
+                    HashSet<string> tags = new HashSet<string>();
+                    var subTtags = DatesRepositorio.DataItems.Select(x => x.Title).OfType<String>().Where(x =>x!="").Select(x=>x.Split(" "));
+                    foreach (var tag in subTtags)
+                    {
+                        tags.UnionWith(tag);
+                    }
+                    _RightMenu.AddChekFilterItem("Тег", tags.ToList());
+                   
                     drawer.OpenDrawer(GravityCompat.End);
 
                     _RightMenu.SetFilters += (object sender, EventArgs e) =>
                     {
 
                         var filter = ((RightMenu)sender).FilredResultList;
+
+                        var fltr = DatesRepositorio.MFilter;
+                        fltr.GetResult(x => filter.SearchDiscriptions.Length == 0 ? true : filter.SearchDiscriptions.Contains(x.Descripton));
+                        fltr.GetResult(x => filter.SearchDatas[0] == default ?
+                                                                        x.Date.Date > DateTime.MinValue : (
+                                                                        filter.SearchDatas[1] == default ?
+                                                                        x.Date.Date == filter.SearchDatas[0] :
+                                                                        x.Date.Date >= filter.SearchDatas[0] &&
+                                                                        x.Date.Date <= filter.SearchDatas[1]));
+                        var chLi = filter.ExpandableListAdapter.childList;
+                        foreach (var item in chLi)
+                        {
+                            if (!item.Key.IsCheked)
+                                continue;
+
+                            switch (item.Key.Name)
+                            {
+                                case "Карта":
+                                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.Karta.ToString())).ToArray();
+                                    break;
+                                case "Категория по умолчанию":
+                                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.DefaultCategoryTyps.ToString())).ToArray();
+                                    break;
+                                case "Пользовательская категория":
+                                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.CastomCategoryTyps.ToString())).ToArray();
+                                    break;
+                                case "MCC код":
+                                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.MCC.ToString())).ToArray();
+                                    break;
+                                case "MCC описание":
+                                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.MccDeskription)).ToArray();
+                                    break;
+                                case "Тег":
+                                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.Title)).ToArray();
+                                    break;
+                            }
+                        }
+                        drawer.CloseDrawer(GravityCompat.End);
+                        adapter.UpdateFragments();
+                    };
+                    return true;
+                }
+                else
+                {
+                    drawer.OpenDrawer(GravityCompat.End);
+                }
+            }
+            #endregion
+
+            return base.OnOptionsItemSelected(item);
+        }
+
+        private void FabOnClick(object sender, EventArgs eventArgs)
+        {
+            var dialog = new AddItemDialog();
+            dialog.AddedItem += (sender, e) =>{
+
+                UpdateBadgeToTabs();
+                dialog.Dismiss();
+            };
+            dialog.Display(SupportFragmentManager);
+        }
+
+       
+        public bool OnNavigationItemSelected(IMenuItem item)
+        {
+            int id = item.ItemId;
+
+            if (id == Resource.Id.nav_import)
+            {
+                var options = new PickOptions
+                {
+                    PickerTitle = "@string/select_pdf_report"
+                    //FileTypes = customFileType,
+                };
+
+                PickAndShow(options);
+            }
+            if (id == Resource.Id.nav_db_clear)
+            {
+                AlertDialog.Builder builder = new AlertDialog.Builder(this);
+                builder.SetTitle("Очистка базы данных");
+                builder.SetMessage("Данное действие приведет к полной очистке базы данных приложения. " +
+                    "Для сохранения возможности востановить данные воспользуйтесь функцией экспорат в файл. " +
+                    "Вы действительно ходите продолжить?");
+
+                builder.SetCancelable(false);
+                builder.SetPositiveButton("Очистить", async (c, ev) =>
+                {
+                    string message;
+                    message = await DatesRepositorio.DeleteAllItems() ? "База данных очищена." : "Произошла ошибка очистки базы данных.";
+                    Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+                });
+                builder.SetNegativeButton("Отмена", (c, ev) =>
+                {
+                    return;
+                });
+                builder.Create();
+                builder.Show();
+                return true;
+               
+            }
+
+            if (id == Resource.Id.nav_upload)
+            {
+                if (_RightMenuNew == null)
+                {
+                    _RightMenuNew = new RightMenuNew();
+
+                    var filterFragmentTransaction = SupportFragmentManager.BeginTransaction();
+                    filterFragmentTransaction.Add(Resource.Id.MenuFragmentFrame, _RightMenuNew, "MENU");
+                    filterFragmentTransaction.Commit();
+                    _RightMenuNew.FiltredList = DatesRepositorio.DataItems.Select(x => x.Descripton).Distinct().ToList<string>();
+
+                    _RightMenuNew.AddChekFilterItem("Карта", DatesRepositorio.DataItems.Select(x => x.Karta.ToString()).Distinct().ToList());
+                    //_RightMenu.AddChekFilterItem("Категория по умолчанию", DatesRepositorio.DataItems.Select(x => x.DefaultCategoryTyps.ToString()).Distinct().ToList());
+                    //_RightMenu.AddChekFilterItem("Пользовательская категория", DatesRepositorio.DataItems.Select(x => x.CastomCategoryTyps.ToString()).Distinct().ToList());
+
+                    _RightMenuNew.AddChekFilterItem("MCC код", DatesRepositorio.DataItems.Select(x => x.MCC.ToString()).Distinct().ToList());
+                    _RightMenuNew.AddChekFilterItem("MCC описание", DatesRepositorio.DataItems.Select(x => x.MccDeskription?.ToString()).Distinct().ToList());
+
+
+                    drawer.OpenDrawer(GravityCompat.End);
+
+                    _RightMenuNew.SetFilters += (object sender, EventArgs e) =>
+                    {
+
+                        var filter = ((RightMenuNew)sender).FilredResultList;
 
                         #region Test
                         //var filterExtension = DatesRepositorio.DataItems.Where(x => filter.SearchDiscriptions == "" ? true : x.Descripton == filter.SearchDiscriptions)
@@ -378,61 +514,6 @@ namespace NavigationDrawerStarter
                 {
                     drawer.OpenDrawer(GravityCompat.End);
                 }
-            }
-            #endregion
-
-            return base.OnOptionsItemSelected(item);
-        }
-
-        private void FabOnClick(object sender, EventArgs eventArgs)
-        {
-            var dialog = new AddItemDialog();
-            dialog.AddedItem += (sender, e) =>{
-
-                UpdateBadgeToTabs();
-                dialog.Dismiss();
-            };
-            dialog.Display(SupportFragmentManager);
-        }
-
-       
-        public bool OnNavigationItemSelected(IMenuItem item)
-        {
-            int id = item.ItemId;
-
-            if (id == Resource.Id.nav_import)
-            {
-                var options = new PickOptions
-                {
-                    PickerTitle = "@string/select_pdf_report"
-                    //FileTypes = customFileType,
-                };
-
-                PickAndShow(options);
-            }
-            if (id == Resource.Id.nav_db_clear)
-            {
-                AlertDialog.Builder builder = new AlertDialog.Builder(this);
-                builder.SetTitle("Очистка базы данных");
-                builder.SetMessage("Данное действие приведет к полной очистке базы данных приложения. " +
-                    "Для сохранения возможности востановить данные воспользуйтесь функцией экспорат в файл. " +
-                    "Вы действительно ходите продолжить?");
-
-                builder.SetCancelable(false);
-                builder.SetPositiveButton("Очистить", async (c, ev) =>
-                {
-                    string message;
-                    message = await DatesRepositorio.DeleteAllItems() ? "База данных очищена." : "Произошла ошибка очистки базы данных.";
-                    Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
-                });
-                builder.SetNegativeButton("Отмена", (c, ev) =>
-                {
-                    return;
-                });
-                builder.Create();
-                builder.Show();
-                return true;
-               
             }
 
             return true;

@@ -20,7 +20,6 @@ namespace NavigationDrawerStarter.Fragments
 {
     public class AddItemDialog : AndroidX.Fragment.App.DialogFragment, View.IOnClickListener
     {
-        //нужно добавить автозаполнение полей дата, время, тип операции
         public static string TAG = typeof(AddItemDialog).Name;
 
         private Toolbar toolbar;
@@ -41,7 +40,7 @@ namespace NavigationDrawerStarter.Fragments
         private TextInputEditText texstInput_CreateChip;
         private ChipGroup chipGroup;
 
-        private List<AddedItemRow> AddedRows = new List<AddedItemRow>();
+      //  private List<AddedItemRow> AddedRows = new List<AddedItemRow>();
 
         public AddItemDialog()
         {
@@ -105,6 +104,7 @@ namespace NavigationDrawerStarter.Fragments
             textfieldDateCheck.SetEndIconOnClickListener(this);
 
             date_text_edit1 = view.FindViewById<TextInputEditText>(Resource.Id.texstInput_date);
+            date_text_edit1.Text = DateTime.Now.ToShortDateString();
             #endregion
 
             #region TimeEdit
@@ -116,6 +116,7 @@ namespace NavigationDrawerStarter.Fragments
             textfieldTimeCheck.SetEndIconOnClickListener(this);
 
             date_text_edit2 = view.FindViewById<TextInputEditText>(Resource.Id.texstInput_time);
+            date_text_edit2.Text = DateTime.Now.ToShortTimeString();
 
             #endregion
 
@@ -151,19 +152,22 @@ namespace NavigationDrawerStarter.Fragments
 
             #region ChipGroup
 
-            //Распаршевать из строки разделенной пробелмами
             chipGroup = view.FindViewById<ChipGroup>(Resource.Id.chip_group_main);
-            var titles = DatesRepositorio.DataItems.Select(x => x.Title).OfType<String>().ToList();
-            foreach (var tagArray in titles)
+
+            HashSet<string> tags = new HashSet<string>();
+            var subTtags = DatesRepositorio.DataItems.Select(x => x.Title).OfType<String>().Select(x => x?.Split(" "));
+            foreach (var tag in subTtags)
             {
-                var tags = tagArray.Split(" ");
-                foreach (string tag in tags)
-                {
-                    GreateChip(tag, inflater);
-                }
+                tags.UnionWith(tag);
+            }
+            foreach (string tag in tags)
+            {
+                GreateChip(tag, inflater);
             }
 
+
             #endregion
+
             return view;
         }
 
@@ -178,23 +182,19 @@ namespace NavigationDrawerStarter.Fragments
                 chipsText.Add(((Chip)chipGroup.GetChildAt(i)).Text);
             }
 
-
             foreach (string tag in tags)
             {
-
                 if (chipsText.Any(x => x == tag))
                 {
                     Android.Widget.Toast.MakeText(this.Context, $"Тег {tag} уже существует", Android.Widget.ToastLength.Short).Show();
                     continue;
                 }
                 GreateChip(tag, inflater);
-
             }
             texstInput_CreateChip.Text = "";
 
             InputMethodManager imm = (InputMethodManager)Activity.GetSystemService(Context.InputMethodService);
             imm.HideSoftInputFromWindow(texstInput_CreateChip.WindowToken, 0);
-
         }
         private void GreateChip(string tag, LayoutInflater inflater)
         {
@@ -276,7 +276,6 @@ namespace NavigationDrawerStarter.Fragments
             if (isError)
                 return;
 
-
             DataItem item = new DataItem(Enum.Parse<OperacionTyps>(autocompleteTVOperTyp.Text), DateTime.Parse(date_text_edit1.Text + " " + date_text_edit2.Text));
 
             item.Sum = ParseStringToFloat.GetFloat(summOper.Text);
@@ -294,13 +293,10 @@ namespace NavigationDrawerStarter.Fragments
             }
 
             item.Title = String.Join(" ", chipsText.ToArray());
-           
 
             DatesRepositorio.AddDatas(new List<DataItem> { item });
 
             OnAddedItem(this, e);
-
-
         }
 
         private void Toolbar_NavigationClick(object sender, Toolbar.NavigationClickEventArgs e)
@@ -361,7 +357,6 @@ namespace NavigationDrawerStarter.Fragments
                     var fragment = (AndroidX.Fragment.App.DialogFragment)FragmentManager.FindFragmentByTag(typeof(AddItemDialog).Name);
                     fragment?.Dismiss();
                     break;
-
             }
         }
 
@@ -370,8 +365,6 @@ namespace NavigationDrawerStarter.Fragments
             base.OnDismiss(dialog);
             dialog.Dismiss();
             // RequireActivity().OnBackPressed();
-
-
         }
 
         public delegate void EventHandler(object sender, EventArgs e);

@@ -75,10 +75,12 @@
     <Compile Include="Configs\ManagerCore\ConfigurationManager.cs" />
     <Compile Include="DatesRepositorio.cs" />
     <Compile Include="Enums\CategoryTyps.cs" />
+    <Compile Include="Fragments\SelectItemDialog.cs" />
     <Compile Include="Fragments\EditItemDialog.cs" />
     <Compile Include="Fragments\AddItemDialog.cs" />
     <Compile Include="Filters\ExpandableListAdapter.cs" />
     <Compile Include="Filters\MFilter.cs" />
+    <Compile Include="Fragments\RightMenuNew.cs" />
     <Compile Include="Fragments\TimePickerFragment.cs" />
     <Compile Include="Fragments\DatePickerFragment.cs" />
     <Compile Include="Fragments\RightMenuT.cs" />
@@ -90,6 +92,7 @@
     <Compile Include="Models\PdfReportTemplate.cs" />
     <Compile Include="Models\Sms.cs" />
     <Compile Include="Models\SmsParseRegex.cs" />
+    <Compile Include="NoScrollExList\NoScrollExListView.cs" />
     <Compile Include="Parsers\Parser.cs" />
     <Compile Include="Parsers\ParseStringToFloat.cs" />
     <Compile Include="Resources\Resource.designer.cs" />
@@ -300,6 +303,30 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\edititem_dialog.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\color\chipBackgroundColor.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\color\chip_background_color.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\right_menu_new.xml">
+      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
+      <SubType>Designer</SubType>
+    </AndroidResource>
+  </ItemGroup>
+  <ItemGroup>
+    <AndroidResource Include="Resources\layout\nav_header_main2.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>

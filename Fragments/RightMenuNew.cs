@@ -1,25 +1,22 @@
-﻿using Android.Content;
-using Android.OS;
-using Android.Runtime;
+﻿using Android.OS;
+
 using Android.Views;
 using Android.Widget;
 using AndroidX.AppCompat.Widget;
 using AndroidX.Fragment.App;
-using Java.Lang;
+using Google.Android.Material.Chip;
+using Google.Android.Material.TextField;
 using NavigationDrawerStarter.Filters;
 using NavigationDrawerStarter.Models;
-using NavigationDrawerStarter.NoScrollExList;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using SearchView = AndroidX.AppCompat.Widget.SearchView;
 
-
-
 namespace NavigationDrawerStarter.Fragments
 {
-    public class RightMenu : Fragment
+    public class RightMenuNew : Fragment
     {
         public static readonly string TAG = "My:" + typeof(RightMenu).Name.ToUpper();
 
@@ -40,8 +37,7 @@ namespace NavigationDrawerStarter.Fragments
 
         #region ExpandableList
         private ExpandableListAdapter listAdapter;
-        //private ExpandableListView expandableList;
-        private NoScrollExListView expandableList;
+        private ExpandableListView expandableList;
         //private List<string> listHeaderData;
         private Dictionary<ExpandableGroupModel, List<ExpandableChildModel>> listChildData;
         //private List<ExpandableChildModel> groupData;
@@ -49,7 +45,7 @@ namespace NavigationDrawerStarter.Fragments
 
 
         private List<string> _FiltredList;
-        public FilterItems FilredResultList { get; private set; }
+        public FilterItemsNew FilredResultList { get; private set; }
 
         public delegate void EventHandler(object sender, EventArgs e);
         public event EventHandler SetFilters;
@@ -66,7 +62,7 @@ namespace NavigationDrawerStarter.Fragments
             handler?.Invoke(this, e);
         }
 
-        public RightMenu()
+        public RightMenuNew()
         {
             _FiltredList = new List<string>();
             listChildData = new Dictionary<ExpandableGroupModel, List<ExpandableChildModel>>();
@@ -83,10 +79,7 @@ namespace NavigationDrawerStarter.Fragments
             sv1 = searchFragmt.FindViewById<SearchView>(Resource.Id.searchView);
             lv1 = searchFragmt.FindViewById<ListView>(Resource.Id.listViewToSearchView);
 
-            //adp1 = new ArrayAdapter(this.Context, Android.Resource.Layout.SimpleListItem1, FiltredList);
-            adp1 = new MyArrayAdapter(this.Context, Android.Resource.Layout.SimpleListItem1, FiltredList);
-
-
+            adp1 = new ArrayAdapter(this.Context, Android.Resource.Layout.SimpleListItem1, FiltredList);
             lv1.Adapter = adp1;
             adp1.Filter.InvokeFilter("!@$#$^%&%^*&^(*&(*&)(*(&*&^(*^%&$&^#^%#&$"); //todo
             sv1.QueryTextChange += Sv1_QueryTextChange;
@@ -115,8 +108,7 @@ namespace NavigationDrawerStarter.Fragments
             #endregion
 
             #region ExpandableList
-           // expandableList = searchFragmt.FindViewById(Resource.Id.expandList) as ExpandableListView;
-            expandableList = searchFragmt.FindViewById(Resource.Id.expandList) as NoScrollExListView;
+            expandableList = searchFragmt.FindViewById(Resource.Id.expandList) as ExpandableListView;
             listAdapter = new ExpandableListAdapter(Activity, listChildData);
             expandableList.SetAdapter(listAdapter);
             #endregion
@@ -205,15 +197,18 @@ namespace NavigationDrawerStarter.Fragments
         }
         private void Sv1_QueryTextChange(object sender, SearchView.QueryTextChangeEventArgs e)
         {
-            if (sv1.Query.Count() > 0)
+            if (sv1.Query != "")
             {
+                // lv1.Visibility = ViewStates.Visible;
                 adp1.Filter.InvokeFilter(e.NewText);
+                //sv1.Iconified = false;
                 lv1.Visibility = ViewStates.Visible;
             }
             else
             {
                 adp1.Filter.InvokeFilter("!@$#$^%&%^*&^(*&(*&)(*(&*&^(*^%&$&^#^%#&$"); //todo
-            }
+                //sv1.Iconified = true;
+            }                                                                         //lv1.Visibility = ViewStates.Invisible;
         }
         private void Lv1_ItemClick(object sender, AdapterView.ItemClickEventArgs e)
         {
@@ -226,13 +221,7 @@ namespace NavigationDrawerStarter.Fragments
         #region OnButtonClick
         private void Btn_Ok_Click(object sender, EventArgs e)
         {
-            string[] lvItems = new string[lv1.Adapter.Count];
-            for (int i = 0; i < lv1.Adapter.Count; i++)
-            {
-                lvItems[i] = lv1.Adapter.GetItem(i).ToString();
-            }
-
-            FilredResultList = new FilterItems(lvItems, new[] { date_text_edit1.Text, date_text_edit2.Text }, listAdapter);
+            FilredResultList = new FilterItemsNew(sv1.Query, new[] { date_text_edit1.Text, date_text_edit2.Text }, listAdapter);
             OnSetFilters(this, e);
         }
         private void Btn_Clear_Click(object sender, EventArgs e)
@@ -248,13 +237,7 @@ namespace NavigationDrawerStarter.Fragments
                 item.Value.ForEach(i => i.IsCheked = false);
             }
             listAdapter.NotifyDataSetChanged();
-            string[] lvItems = new string[lv1.Adapter.Count];
-            for (int i = 0; i < lv1.Adapter.Count; i++)
-            {
-                lvItems[i] = lv1.Adapter.GetItem(i).ToString();
-            }
-
-            FilredResultList = new FilterItems(new string[] {}, new[] { date_text_edit1.Text, date_text_edit2.Text }, listAdapter);
+            FilredResultList = new FilterItemsNew(sv1.Query, new[] { date_text_edit1.Text, date_text_edit2.Text }, listAdapter);
             OnSetFilters(this, e);
 
         }
@@ -273,13 +256,13 @@ namespace NavigationDrawerStarter.Fragments
         }
 
     }
-    public class FilterItems
+    public class FilterItemsNew
     {
-        public string[] SearchDiscriptions { get; private set; }
+        public string SearchDiscriptions { get; private set; }
         public DateTime[] SearchDatas { get; private set; }
         public ExpandableListAdapter ExpandableListAdapter { get; private set; }
 
-        public FilterItems(string[] DiscriptionsSourse, string[] DatasSourse, ExpandableListAdapter expandableListAdapter)
+        public FilterItemsNew(string DiscriptionsSourse, string[] DatasSourse, ExpandableListAdapter expandableListAdapter)
         {
             SearchDiscriptions = DiscriptionsSourse;
             DateTime d1 = DateTime.TryParse(DatasSourse[0], out d1) ? d1 : default;
@@ -289,98 +272,4 @@ namespace NavigationDrawerStarter.Fragments
             ExpandableListAdapter = expandableListAdapter;
         }
     }
-
-    public class MyArrayAdapter : ArrayAdapter<string>
-    {
-        private List<string> originalList;
-        private MyAdapterFilter filter;
-        
-        public MyArrayAdapter(Context context, int textViewResourceId, List<string> objects) : base(context, textViewResourceId, objects)
-        {
-            originalList = objects;
-        }
-        public override Filter Filter
-        {
-            get 
-            {
-                if (filter == null)
-                {
-                    filter = new MyAdapterFilter();
-                    filter.originalList = originalList;
-                    filter.SetFilters += (sender, result) => 
-                    {
-                       
-                        this.Clear();
-                        this.AddAll(result);
-                        this.NotifyDataSetChanged();
-                    };
-                    
-                }
-                return filter; 
-            }
-        }
-    }
-
-    public class MyAdapterFilter : Filter
-    {
-        public List<string> originalList = new List<string>();
-        public List<string> resultList = new List<string>();
-        
-
-        protected override FilterResults PerformFiltering(ICharSequence constraint)
-        {
-
-            FilterResults result = new FilterResults();
-            if (constraint != null && constraint.ToString().Length > 0)
-            {
-                List<string> filteredItems = new List<string>();
-
-                for (int i = 0, l = originalList.Count; i < l; i++)
-                {
-                    string country = originalList[i];
-                    if (country.ToLower().Contains(constraint.ToString().ToLower()))
-                        filteredItems.Add(country);
-                }
-                resultList = filteredItems;
-                //result.Count = filteredItems.Count;
-                //result.Values = filteredItems.ToArray();
-            }
-            else
-            {
-                resultList = originalList;
-                //result.Values = originalList.ToArray();
-                //result.Count = originalList.Count;
-
-            }
-            return result;
-
-        }
-
-        protected override void PublishResults(ICharSequence constraint, FilterResults results)
-        {
-            
-            OnSetFilters(this, resultList);
-        }
-
-        public delegate void EventHandler(object sender, List<string> results);
-        public event EventHandler SetFilters;
-        protected virtual void OnSetFilters(object sender, List<string> results)
-        {
-            EventHandler handler = SetFilters;
-            handler?.Invoke(this, results);
-        }
-
-        public string[] GetFiltredList()
-        {
-            return resultList.ToArray();
-        }
-
-            
-
-
-
-
-    }
-
-
 }
