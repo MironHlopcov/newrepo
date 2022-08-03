@@ -112,6 +112,7 @@ namespace NavigationDrawerStarter
             adapter = new CustomViewPager2Adapter(this.SupportFragmentManager, this.Lifecycle);
             tabIcons = new int[]{
             Resource.Mipmap.ic_cash50,
+           
             Resource.Mipmap.ic_in_deposit50,
             Resource.Mipmap.ic_cash_out
             };

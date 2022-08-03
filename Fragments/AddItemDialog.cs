@@ -79,7 +79,8 @@ namespace NavigationDrawerStarter.Fragments
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
             base.OnCreateView(inflater, container, savedInstanceState);
-            View view = inflater.Inflate(Resource.Layout.addItem_dialog, container, false);
+            //View view = inflater.Inflate(Resource.Layout.addItem_dialog, container, false);
+            View view = inflater.Inflate(Resource.Layout.testItem_dialog, container, false);
             toolbar = (Toolbar)view.FindViewById(Resource.Id.toolbar);
 
             #region OperTyp

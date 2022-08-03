@@ -145,8 +145,6 @@
                         android:maxLines="1"
                         android:inputType="datetime"
                         android:imeOptions="actionDone"/>
-
-
                 </com.google.android.material.textfield.TextInputLayout>
             </LinearLayout>
 

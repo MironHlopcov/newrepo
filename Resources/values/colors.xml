@@ -9,6 +9,7 @@
     <color name="colorPrimaryDark">#031828</color>
 	<color name="colorPrimaryLight">#57687c</color>
     <color name="colorAccent">#087f23</color>
+    <color name="controlNormal">#00e676</color>
 
 	
 </resources>

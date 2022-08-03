@@ -25,10 +25,10 @@ namespace NavigationDrawerStarter
             public List<DataItem> ListData { get; set; }
             public DataAdapter DataAdapter { get; private set; } //tested
             private int[] ColorSum { get; set; } = new int[3] { 220, 20, 60 };
-            private int[] ColorTransCount { get; set; } = new int[3] { 0, 191, 255  };
+            private int[] ColorTransCount { get; set; } = new int[3] { 0, 191, 255 };
             private int[] ColorSumMcc { get; set; } = new int[3] { 255, 140, 0 };
             private int[] ColorCountMcc { get; set; } = new int[3] { 46, 139, 87 };
-            
+
             public ViewPage2Fragment(int index, List<DataItem> listData)
             {
                 Index = index;
@@ -65,7 +65,7 @@ namespace NavigationDrawerStarter
                 #endregion
             }
 
-            public void OnItemClick(AdapterView parent, View view, int position, long id)
+            public void OnItemClickDeletAfter(AdapterView parent, View view, int position, long id)
             {
                 #region PlotView
                 LayoutInflater inflater = Activity.LayoutInflater;
@@ -116,10 +116,11 @@ namespace NavigationDrawerStarter
                 builder.Create();
                 builder.Show();
             }
-            public void OnItemClick1(AdapterView parent, View view, int position, long id)
+            public void OnItemClick(AdapterView parent, View view, int position, long id)
             {
                 var dialog = new SelectItemDialog(ListData[position]);
-                dialog.EditItemChange += (sender, e) => {
+                dialog.EditItemChange += (sender, e) =>
+                {
                     DataAdapter.NotifyDataSetChanged();
                     dialog.Dismiss();
                 };
@@ -135,7 +136,8 @@ namespace NavigationDrawerStarter
                 builder.SetPositiveButton("Редактировать", (c, ev) =>
                 {
                     var dialog = new EditItemDialog(ListData[position]);
-                    dialog.EditItemChange += (sender, e) => {
+                    dialog.EditItemChange += (sender, e) =>
+                    {
                         DataAdapter.NotifyDataSetChanged();
                         dialog.Dismiss();
                     };
@@ -165,12 +167,11 @@ namespace NavigationDrawerStarter
                     //plotModel1.Background = OxyColors.LightGray;
                     DefaultColors = new List<OxyColor>{
                     OxyColors.WhiteSmoke,
-                    
                 }
-                };
+            };
 
                 var plotModelWidth = plotModel1.Width;
- 
+
                 var pieSeriessumCountMcc = new CustomPieSeries();
                 pieSeriessumCountMcc.Diameter = 1;
                 pieSeriessumCountMcc.StartAngle = 60;
@@ -180,7 +181,7 @@ namespace NavigationDrawerStarter
                     Fill = OxyColor.FromRgb((byte)ColorCountMcc[0], (byte)ColorCountMcc[1], (byte)ColorCountMcc[2])
                 });
                 pieSeriessumCountMcc.Slices.Add(new PieSlice("", 100 - countMcc) { Fill = pieSeriessumCountMcc.UnVisebleFillColors });
-               
+
 
                 var pieSeriesSumMcc = new CustomPieSeries();
                 pieSeriesSumMcc.Diameter = 0.8;
@@ -191,7 +192,7 @@ namespace NavigationDrawerStarter
                     Fill = OxyColor.FromRgb((byte)ColorSumMcc[0], (byte)ColorSumMcc[1], (byte)ColorSumMcc[2])
                 });
                 pieSeriesSumMcc.Slices.Add(new PieSlice("", 100 - sumMcc) { Fill = pieSeriesSumMcc.UnVisebleFillColors });
-                
+
 
                 var pieSeriesCount = new CustomPieSeries();
                 pieSeriesCount.Diameter = 0.5;
@@ -202,20 +203,20 @@ namespace NavigationDrawerStarter
                     Fill = OxyColor.FromRgb((byte)ColorTransCount[0], (byte)ColorTransCount[1], (byte)ColorTransCount[2])
                 });
                 pieSeriesCount.Slices.Add(new PieSlice("", 100 - count) { Fill = pieSeriesCount.UnVisebleFillColors });
-               
+
 
                 var pieSeriesSum = new CustomPieSeries();
                 pieSeriesSum.StartAngle = 0;
                 pieSeriesSum.UnVisebleFillColors = OxyColors.WhiteSmoke;
                 pieSeriesSum.Diameter = 0.2;
-               
-               
+
+
                 pieSeriesSum.Slices.Add(new PieSlice("", sum)
                 {
                     Fill = OxyColor.FromRgb((byte)ColorSum[0], (byte)ColorSum[1], (byte)ColorSum[2])
                 });
                 pieSeriesSum.Slices.Add(new PieSlice("", 100 - sum) { Fill = pieSeriesSum.UnVisebleFillColors });
-                
+
 
 
                 plotModel1.Series.Add(pieSeriessumCountMcc);
