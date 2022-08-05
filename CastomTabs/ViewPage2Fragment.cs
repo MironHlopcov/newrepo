@@ -182,7 +182,6 @@ namespace NavigationDrawerStarter
                 });
                 pieSeriessumCountMcc.Slices.Add(new PieSlice("", 100 - countMcc) { Fill = pieSeriessumCountMcc.UnVisebleFillColors });
 
-
                 var pieSeriesSumMcc = new CustomPieSeries();
                 pieSeriesSumMcc.Diameter = 0.8;
                 pieSeriesSumMcc.StartAngle = 40;
@@ -192,7 +191,6 @@ namespace NavigationDrawerStarter
                     Fill = OxyColor.FromRgb((byte)ColorSumMcc[0], (byte)ColorSumMcc[1], (byte)ColorSumMcc[2])
                 });
                 pieSeriesSumMcc.Slices.Add(new PieSlice("", 100 - sumMcc) { Fill = pieSeriesSumMcc.UnVisebleFillColors });
-
 
                 var pieSeriesCount = new CustomPieSeries();
                 pieSeriesCount.Diameter = 0.5;
@@ -204,20 +202,16 @@ namespace NavigationDrawerStarter
                 });
                 pieSeriesCount.Slices.Add(new PieSlice("", 100 - count) { Fill = pieSeriesCount.UnVisebleFillColors });
 
-
                 var pieSeriesSum = new CustomPieSeries();
                 pieSeriesSum.StartAngle = 0;
                 pieSeriesSum.UnVisebleFillColors = OxyColors.WhiteSmoke;
                 pieSeriesSum.Diameter = 0.2;
-
 
                 pieSeriesSum.Slices.Add(new PieSlice("", sum)
                 {
                     Fill = OxyColor.FromRgb((byte)ColorSum[0], (byte)ColorSum[1], (byte)ColorSum[2])
                 });
                 pieSeriesSum.Slices.Add(new PieSlice("", 100 - sum) { Fill = pieSeriesSum.UnVisebleFillColors });
-
-
 
                 plotModel1.Series.Add(pieSeriessumCountMcc);
                 plotModel1.Series.Add(pieSeriesSumMcc);

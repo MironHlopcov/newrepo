@@ -71,6 +71,7 @@ namespace NavigationDrawerStarter
             var txtDate = view.FindViewById<TextView>(Resource.Id.data_TextView);
 
             txtSum.Text = string.Format("{0:F}", dataItems[position].Sum);
+            //txtSum.Text = dataItems[position].HashId.ToString();
             //txtSum.Text = dataItems[position].Sum.ToString(CultureInfo.InvariantCulture);
             txtDeskr.Text = dataItems[position].Descripton;
             txtDate.Text = dataItems[position].Date.ToShortDateString();

@@ -96,7 +96,9 @@ namespace NavigationDrawerStarter.Fragments
 
             #region Summ
             summOper = view.FindViewById<TextInputEditText>(Resource.Id.texstInput_OperationTSumm);
-            summOper.Text = selectedItem.Sum.ToString();
+            //var asdf = string.Format("{0:F}", selectedItem.Sum);
+            //summOper.SetText(string.Format("{0:F}", selectedItem.Sum).ToCharArray(), 0, string.Format("{0:F}", selectedItem.Sum.ToString()).Length);
+            summOper.Text = string.Format("{0:F}", selectedItem.Sum);
             summOper.Focusable = false;
             #endregion
 
@@ -230,12 +232,6 @@ namespace NavigationDrawerStarter.Fragments
             base.OnViewCreated(view, savedInstanceState);
             toolbar.SetNavigationOnClickListener(this);
             toolbar.Title = selectedItem.Descripton;
-
-            //toolbar.InflateMenu(Resource.Menu.addItem_dialog);
-            //toolbar.MenuItemClick += Toolbar_MenuItemClick;
-
-
-           
 
         }
 

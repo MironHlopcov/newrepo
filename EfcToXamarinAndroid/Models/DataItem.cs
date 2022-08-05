@@ -14,17 +14,18 @@ namespace EfcToXamarinAndroid.Core
         public OperacionTyps OperacionTyp { get; private set; }
         public float Balance { get; set; }
         public float Sum { get; set; }
+        public float OldSum { get; set; }
         public int Karta { get; set; }
         public string? Title { get; set; }
         public string? Descripton { get; set; }
         public int MCC { get; set; }
         public DateTime Date { get; set; }
+        public bool IsParent { get; private set; }
+        public int ParentId { get;  set; }
         public CategoryTyps DefaultCategoryTyps { get; private set; }
         public CategoryTyps CastomCategoryTyps { get; private set; }
         public List<SybCategory>? SubCategorys { get; private set; }
-
-        [NotMapped]
-        public string MccDeskription { get; set; }
+        public string? MccDeskription { get; set; }
 
 
 
@@ -32,9 +33,10 @@ namespace EfcToXamarinAndroid.Core
         {
             Date = dateTime;
             OperacionTyp = operacionTyp;
-            HashId = dateTime.AddMilliseconds(-(dateTime.Second * 1000)).Ticks;
+            HashId = dateTime.AddMilliseconds(-(dateTime.Second * 1000)).Ticks;//+9; //
             Descripton = OperacionTyp.ToString();
         }
+      
         public DataItem()
         {
 
@@ -44,24 +46,26 @@ namespace EfcToXamarinAndroid.Core
             HashId = dataItem.HashId;
             OperacionTyp = dataItem.OperacionTyp;
             Balance = dataItem.Balance;
+            if(!IsParent)
+                if(ParentId==0)
+                    OldSum = Sum;
             Sum = dataItem.Sum;
             Karta = dataItem.Karta;
             Title = dataItem.Title;
             Descripton = dataItem.Descripton;
             MCC = dataItem.MCC;
-            Date = dataItem.Date;
+            if(ParentId!=0)
+                Date = dataItem.Date;
             DefaultCategoryTyps = dataItem.DefaultCategoryTyps;
             CastomCategoryTyps = dataItem.CastomCategoryTyps;
             SubCategorys = dataItem.SubCategorys;
+            IsParent = true;
         }
         public override string ToString()
         {
             return $"{Sum} {Descripton} {Date} ";
         }
-
-
         public override bool Equals(object obj) => this.Equals(obj as DataItem);
-
         public bool Equals(DataItem other)
         {
             if (other == null)
@@ -96,7 +100,7 @@ namespace EfcToXamarinAndroid.Core
             if (this.MCC != other.MCC)
                 return false;
 
-
+           
 
 
             return true;
@@ -111,6 +115,7 @@ namespace EfcToXamarinAndroid.Core
         //{
         //    return mccDeskription;
         //}
+
 
 
 

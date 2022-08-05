@@ -4,6 +4,7 @@ using NavigationDrawerStarter.Configs.ManagerCore;
 using NavigationDrawerStarter.Filters;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,6 +38,7 @@ namespace NavigationDrawerStarter
             }
             catch (Exception ex)
             {
+                
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
@@ -107,19 +109,42 @@ namespace NavigationDrawerStarter
         }
         private static List<DataItem> GetNewDatas(List<DataItem> dataItems)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             var newDataItems = new List<DataItem>();
 
             if (DataItems.Count > 0)
             {
                 foreach (var item in dataItems)
                 {
-                    
+
+                    //if (!DataItems.Any(x => x.HashId  == item.HashId ))
+                    //    newDataItems.Add(item);
+                    //else
+                    //{
+
+                    //    if (!DataItems.Where(x => x.HashId >> 4 == item.HashId >> 4).Any(x => x.Sum == item.Sum))
+                    //    {
+                    //        if(DataItems.Where(x => x.HashId >> 4 == item.HashId >> 4).Where(x => x.Sum == item.Sum).Any(x=>(x.HashId&15)==0))
+                    //        newDataItems.Add(item);
+                    //    }
+                    //    else
+                    //    {
+                    //        if (!DataItems.Where(x => x.HashId >> 4 == item.HashId >> 4).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
+                    //            newDataItems.Add(item);
+                    //    }
+
+                    //}
+
+
                     if (!DataItems.Any(x => x.HashId == item.HashId))
                         newDataItems.Add(item);
                     else
                     {
                         if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.Sum == item.Sum))
-                            newDataItems.Add(item);
+                            if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.OldSum == item.Sum))
+                                newDataItems.Add(item);
                         else
                         {
                             if (!DataItems.Where(x => x.HashId == item.HashId).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
@@ -127,6 +152,7 @@ namespace NavigationDrawerStarter
                         }
 
                     }
+
 
                     //if (!DataItems.Any(x => x.Equals(item)))
                     //    newDataItems.Add(item);
@@ -140,6 +166,14 @@ namespace NavigationDrawerStarter
             }
             else
                 newDataItems = dataItems;
+
+
+            stopWatch.Stop();
+
+
+            Console.WriteLine(stopWatch.Elapsed);
+
+
             return newDataItems;
 
         }
@@ -158,17 +192,32 @@ namespace NavigationDrawerStarter
         }
         public static async Task UpdateItemValue(int id, DataItem newValue)
         {
-            try
+            var item = DataItems.SingleOrDefault(x => x.Id == id);
+            if (item.Sum > newValue.Sum)
             {
-                var item = DataItems.SingleOrDefault(x => x.Id == id);
+                item.Sum = item.Sum - newValue.Sum;
+                item.SetNewValues(item);
+
+                while (DatesRepositorio.DataItems.Any(x => x.Date == newValue.Date))
+                    newValue.Date = newValue.Date.Second == 59 ?
+                        newValue.Date.AddSeconds(-item.Date.Second) :
+                        newValue.Date.AddSeconds(1); //создаем потомка с различающимся временем в секундах
+                                                     //HashId потомка остается таким же как у родителя
+                                                     //при добавлении данных возможно повторное добовление родителя
+                newValue.ParentId = item.Id; 
+                AddDatas( new List<DataItem> { newValue });
+            }
+            else
                 item?.SetNewValues(newValue);
 
+            try
+            {
                 using (var db = new DataItemContext(dbFullPath))
                 {
                     var result = db.Cats.SingleOrDefault(x=>x.Id==id);
                     if (result != null)
                     {
-                        result.SetNewValues(newValue);
+                        result.SetNewValues(item);
                         await db.SaveChangesAsync();
                     }
                 }
@@ -178,6 +227,11 @@ namespace NavigationDrawerStarter
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
+
+
+        
+
+
         public static List<DataItem> GetPayments(List<DataItem> dataItems)
         {
             MccConfigurationManager mccManager = MccConfigurationManager.ConfigManager;

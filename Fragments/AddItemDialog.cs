@@ -97,7 +97,6 @@ namespace NavigationDrawerStarter.Fragments
             #endregion
 
             #region DateEdit
-
             textfieldDateCheck = view.FindViewById<TextInputLayout>(Resource.Id.textfield_DateCheck);
             textfieldDateCheck.Tag = "textfieldDateCheck_Tag";
 
@@ -109,7 +108,6 @@ namespace NavigationDrawerStarter.Fragments
             #endregion
 
             #region TimeEdit
-
             textfieldTimeCheck = view.FindViewById<TextInputLayout>(Resource.Id.textfield_TimeCheck);
             textfieldTimeCheck.Tag = "textfieldTimeCheck_Tag";
 
@@ -236,6 +234,14 @@ namespace NavigationDrawerStarter.Fragments
             if (summOper.Text == "")
             {
                 wrap_texstInput_OperationTSumm.Error = "Поле обязательно для заполнения";
+                isError = true;
+            }
+            else
+                wrap_aut_comp_tv_OperationTyp.ErrorEnabled = false;
+            if (ParseStringToFloat.GetFloat(summOper.Text)==0)
+            {
+                wrap_texstInput_OperationTSumm.Error = "Сумма операции должна быть больше 0 и не может превышать " +
+                    "340 028 230 000 000 000 000 000 000 000 000 000 000";
                 isError = true;
             }
             else
@@ -369,6 +375,7 @@ namespace NavigationDrawerStarter.Fragments
         }
 
         public delegate void EventHandler(object sender, EventArgs e);
+
         public event EventHandler AddedItem;
 
         protected void OnAddedItem(object sender, EventArgs e)

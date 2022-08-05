@@ -100,7 +100,8 @@ namespace NavigationDrawerStarter.Fragments
             #region Summ
             wrap_texstInput_OperationTSumm = view.FindViewById<TextInputLayout>(Resource.Id.wrap_texstInput_OperationTSumm);
             summOper = view.FindViewById<TextInputEditText>(Resource.Id.texstInput_OperationTSumm);
-            summOper.Text = selectedItem.Sum.ToString();
+            //summOper.SetText(string.Format("{0:F}", selectedItem.Sum.ToString()).ToCharArray(), 0, string.Format("{0:F}", selectedItem.Sum.ToString()).Length);
+           summOper.Text = string.Format("{0:F}", selectedItem.Sum);
             #endregion
 
             #region DateEdit
@@ -108,11 +109,13 @@ namespace NavigationDrawerStarter.Fragments
             textfieldDateCheck = view.FindViewById<TextInputLayout>(Resource.Id.textfield_DateCheck);
             textfieldDateCheck.Tag = "textfieldDateCheck_Tag";
 
-            textfieldDateCheck.SetStartIconOnClickListener(this);
-            textfieldDateCheck.SetEndIconOnClickListener(this);
+            //textfieldDateCheck.SetStartIconOnClickListener(this);
+            //textfieldDateCheck.SetEndIconOnClickListener(this);
 
             date_text_edit1 = view.FindViewById<TextInputEditText>(Resource.Id.texstInput_date);
             date_text_edit1.Text = selectedItem.Date.ToShortDateString();
+
+            date_text_edit1.Enabled = false;
             #endregion
 
             #region TimeEdit
@@ -120,12 +123,13 @@ namespace NavigationDrawerStarter.Fragments
             textfieldTimeCheck = view.FindViewById<TextInputLayout>(Resource.Id.textfield_TimeCheck);
             textfieldTimeCheck.Tag = "textfieldTimeCheck_Tag";
 
-            textfieldTimeCheck.SetStartIconOnClickListener(this);
-            textfieldTimeCheck.SetEndIconOnClickListener(this);
+            //textfieldTimeCheck.SetStartIconOnClickListener(this);
+            //textfieldTimeCheck.SetEndIconOnClickListener(this);
 
             date_text_edit2 = view.FindViewById<TextInputEditText>(Resource.Id.texstInput_time);
             date_text_edit2.Text = selectedItem.Date.ToLongTimeString();
 
+            date_text_edit2.Enabled = false;
             #endregion
 
             #region OperationDiscription
@@ -322,29 +326,45 @@ namespace NavigationDrawerStarter.Fragments
                 Dismiss();
                 return;
             }
+            DatesRepositorio.UpdateItemValue(selectedItem.Id, item);
+            OnEditItemChange(this, e);
 
-            if (item.Sum < selectedItem.Sum)
-            {
-                while (DatesRepositorio.DataItems.Any(x => x.Date == item.Date))
-                    item.Date = item.Date.AddSeconds(1);
+            //if (item.Sum < selectedItem.Sum)
+            //{
+            //    while (DatesRepositorio.DataItems.Any(x => x.Date == item.Date))
+            //        item.Date = item.Date.Second == 59? 
+            //            item.Date.AddSeconds(-item.Date.Second) : 
+            //            item.Date.AddSeconds(1); //создаем потомка с различающимся временем в секундах
+            //                                     //HashId потомка остается таким же как у родителя
+            //                                     //при добавлении данных возможно повторное добовление родителя
+            //    selectedItem.IsParent = true;
+            //    selectedItem.Sum = selectedItem.Sum - item.Sum;
+            //    DatesRepositorio.UpdateItemValue(selectedItem.Id, selectedItem);
 
-                selectedItem.Sum = selectedItem.Sum - item.Sum;
-                DatesRepositorio.UpdateItemValue(selectedItem.Id, selectedItem);
-                DatesRepositorio.AddDatas(new List<DataItem> { item });
+            //    item.ParentId = selectedItem.Id;
+            //    DatesRepositorio.AddDatas(new List<DataItem> { item });
 
-                //OnAddedItem(this, e);
+            //    Android.Widget.Toast.MakeText(this.Context, $"Cумма {item.Sum} меньше начальной. Исходная транзакция будет разделена.",
+            //        Android.Widget.ToastLength.Short).Show();
+            //    OnEditItemChange(this, e);
+            //}
 
-                Android.Widget.Toast.MakeText(this.Context, $"Cумма {item.Sum} меньше начальной. Исходная транзакция будет разделена.",
-                    Android.Widget.ToastLength.Short).Show();
-                OnEditItemChange(this, e);
+            //else
+            //{
+            //    if (item.Sum > selectedItem.Sum)
+            //    {
+            //        selectedItem.IsParent = false;
+            //        selectedItem.Sum = item.Sum;
+            //        DatesRepositorio.UpdateItemValue(selectedItem.Id, selectedItem);
 
-
-            }
-            else
-            {
-                DatesRepositorio.UpdateItemValue(selectedItem.Id, item);
-                OnEditItemChange(this, e);
-            }
+            //        OnEditItemChange(this, e);
+            //    }
+            //    else
+            //    {
+            //        DatesRepositorio.UpdateItemValue(selectedItem.Id, item);
+            //        OnEditItemChange(this, e);
+            //    }
+            //}
         }
 
         private void Toolbar_NavigationClick(object sender, Toolbar.NavigationClickEventArgs e)

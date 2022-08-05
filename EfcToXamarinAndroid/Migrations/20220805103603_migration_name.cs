@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EfcToXamarinAndroid.MigrationsHelper.Migrations
 {
-    public partial class Mcc : Migration
+    public partial class migration_name : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -17,13 +17,17 @@ namespace EfcToXamarinAndroid.MigrationsHelper.Migrations
                     OperacionTyp = table.Column<int>(nullable: false),
                     Balance = table.Column<float>(nullable: false),
                     Sum = table.Column<float>(nullable: false),
+                    OldSum = table.Column<float>(nullable: false),
                     Karta = table.Column<int>(nullable: false),
                     Title = table.Column<string>(nullable: true),
                     Descripton = table.Column<string>(nullable: true),
                     MCC = table.Column<int>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
+                    IsParent = table.Column<bool>(nullable: false),
+                    ParentId = table.Column<int>(nullable: false),
                     DefaultCategoryTyps = table.Column<int>(nullable: false),
-                    CastomCategoryTyps = table.Column<int>(nullable: false)
+                    CastomCategoryTyps = table.Column<int>(nullable: false),
+                    MccDeskription = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {
