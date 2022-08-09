@@ -40,7 +40,7 @@ namespace NavigationDrawerStarter.Fragments
         private TextInputEditText texstInput_CreateChip;
         private ChipGroup chipGroup;
 
-      //  private List<AddedItemRow> AddedRows = new List<AddedItemRow>();
+        //  private List<AddedItemRow> AddedRows = new List<AddedItemRow>();
 
         public AddItemDialog()
         {
@@ -61,7 +61,6 @@ namespace NavigationDrawerStarter.Fragments
             SetStyle(AndroidX.Fragment.App.DialogFragment.StyleNormal, Resource.Style.AppTheme_FullScreenDialog);
         }
 
-
         public override void OnStart()
         {
             base.OnStart();
@@ -74,7 +73,6 @@ namespace NavigationDrawerStarter.Fragments
                 //dialog.Window.SetWindowAnimations(Resource.Style.AppTheme_Slide);
             }
         }
-
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -238,7 +236,7 @@ namespace NavigationDrawerStarter.Fragments
             }
             else
                 wrap_aut_comp_tv_OperationTyp.ErrorEnabled = false;
-            if (ParseStringToFloat.GetFloat(summOper.Text)==0)
+            if (ParseStringToFloat.GetFloat(summOper.Text) == 0)
             {
                 wrap_texstInput_OperationTSumm.Error = "Сумма операции должна быть больше 0 и не может превышать " +
                     "340 028 230 000 000 000 000 000 000 000 000 000 000";
@@ -246,6 +244,13 @@ namespace NavigationDrawerStarter.Fragments
             }
             else
                 wrap_aut_comp_tv_OperationTyp.ErrorEnabled = false;
+
+            DateTime itDateTime = DateTime.Parse(date_text_edit1.Text + " " + date_text_edit2.Text);
+            while (DatesRepositorio.DataItems.Any(x => x.Date == itDateTime))
+                itDateTime = itDateTime.Second == 59 ?
+                    itDateTime.Date.AddSeconds(-itDateTime.Second) :
+                    itDateTime.Date.AddSeconds(1);
+
             #region DateCheck
             if (date_text_edit1.Text == "")
             {
@@ -254,10 +259,16 @@ namespace NavigationDrawerStarter.Fragments
             }
             else
                 textfieldDateCheck.ErrorEnabled = false;
-
             if (!DateTime.TryParse(date_text_edit1.Text, out DateTime dateResult))
             {
                 textfieldDateCheck.Error = "Не удается преобразовать значение к требуемому формату";
+                isError = true;
+            }
+            else
+                textfieldDateCheck.ErrorEnabled = false;
+            if (itDateTime.Date > DateTime.Now.Date)
+            {
+                textfieldDateCheck.Error = "Нельзя создавать транзакции будущих периодов!";
                 isError = true;
             }
             else
@@ -279,18 +290,32 @@ namespace NavigationDrawerStarter.Fragments
             }
             else
                 textfieldTimeCheck.ErrorEnabled = false;
+
+            if (itDateTime.TimeOfDay > DateTime.Now.TimeOfDay)
+            {
+                textfieldTimeCheck.Error = "Нельзя создавать транзакции будущих периодов!";
+                isError = true;
+            }
+            else
+                textfieldTimeCheck.ErrorEnabled = false;
+
             #endregion
             if (isError)
                 return;
 
-            DataItem item = new DataItem(Enum.Parse<OperacionTyps>(autocompleteTVOperTyp.Text), DateTime.Parse(date_text_edit1.Text + " " + date_text_edit2.Text));
+
+
+
+
+
+            DataItem item = new DataItem(Enum.Parse<OperacionTyps>(autocompleteTVOperTyp.Text), itDateTime);
 
             item.Sum = ParseStringToFloat.GetFloat(summOper.Text);
             // item.Sum = float.TryParse(summOper.Text, out float outSumm) ? outSumm : default;
             item.Descripton = autCompTvOperationDiscription.Text;
             item.MCC = int.TryParse(autCompTvOperationMccCode.Text, out int outMcc) ? outMcc : default;
             item.MccDeskription = autCompTvOperationMccDiscription.Text;
-
+            item.ParentId = -1; //-1 для записей созданных пользователем
             var checkedTipsId = chipGroup.CheckedChipIds;
             var chipsText = new List<string>();
             foreach (var id in checkedTipsId)

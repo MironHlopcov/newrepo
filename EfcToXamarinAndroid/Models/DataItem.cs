@@ -21,7 +21,7 @@ namespace EfcToXamarinAndroid.Core
         public int MCC { get; set; }
         public DateTime Date { get; set; }
         public bool IsParent { get; private set; }
-        public int ParentId { get;  set; }
+        public int ParentId { get; set; }
         public CategoryTyps DefaultCategoryTyps { get; private set; }
         public CategoryTyps CastomCategoryTyps { get; private set; }
         public List<SybCategory>? SubCategorys { get; private set; }
@@ -33,33 +33,35 @@ namespace EfcToXamarinAndroid.Core
         {
             Date = dateTime;
             OperacionTyp = operacionTyp;
-            HashId = dateTime.AddMilliseconds(-(dateTime.Second * 1000)).Ticks;//+9; //
+            HashId = dateTime.AddMilliseconds(-(dateTime.Second * 1000)).Ticks;
             Descripton = OperacionTyp.ToString();
         }
-      
+
         public DataItem()
         {
 
         }
         public void SetNewValues(DataItem dataItem)
         {
-            HashId = dataItem.HashId;
             OperacionTyp = dataItem.OperacionTyp;
             Balance = dataItem.Balance;
-            if(!IsParent)
-                if(ParentId==0)
+            if (!IsParent) //если запись не редактировалась
+                if (ParentId == 0) // и если у записи нет предков 
                     OldSum = Sum;
             Sum = dataItem.Sum;
             Karta = dataItem.Karta;
             Title = dataItem.Title;
             Descripton = dataItem.Descripton;
             MCC = dataItem.MCC;
-            if(ParentId!=0)
+            if (ParentId != 0) //если у записи есть предки, значит она пользовательская и можно изменять ее дату
+            {
                 Date = dataItem.Date;
+                HashId = Date.AddMilliseconds(-(Date.Second * 1000)).Ticks;
+            }    
             DefaultCategoryTyps = dataItem.DefaultCategoryTyps;
             CastomCategoryTyps = dataItem.CastomCategoryTyps;
             SubCategorys = dataItem.SubCategorys;
-            IsParent = true;
+            IsParent = true; //помечаем запись как редактированную
         }
         public override string ToString()
         {
@@ -100,21 +102,13 @@ namespace EfcToXamarinAndroid.Core
             if (this.MCC != other.MCC)
                 return false;
 
-           
+
 
 
             return true;
 
         }
 
-        //public void SetMccDeskription(string deskription)
-        //{
-        //    mccDeskription = deskription;
-        //}
-        //public string GetMccDeskription()
-        //{
-        //    return mccDeskription;
-        //}
 
 
 

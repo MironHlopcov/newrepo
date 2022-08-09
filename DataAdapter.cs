@@ -69,12 +69,14 @@ namespace NavigationDrawerStarter
             var txtDeskr = view.FindViewById<TextView>(Resource.Id.deskription_TextView);
             var txtMcc = view.FindViewById<TextView>(Resource.Id.mcc_code_TextView); 
             var txtDate = view.FindViewById<TextView>(Resource.Id.data_TextView);
+            var txtTime = view.FindViewById<TextView>(Resource.Id.time_TextView);
 
             txtSum.Text = string.Format("{0:F}", dataItems[position].Sum);
-            //txtSum.Text = dataItems[position].HashId.ToString();
+            //txtSum.Text = dataItems[position].OldSum.ToString() +":"+ string.Format("{0:F}", dataItems[position].Sum);
             //txtSum.Text = dataItems[position].Sum.ToString(CultureInfo.InvariantCulture);
             txtDeskr.Text = dataItems[position].Descripton;
             txtDate.Text = dataItems[position].Date.ToShortDateString();
+            txtTime.Text = dataItems[position].Date.ToLongTimeString();
             txtMcc.Text = dataItems[position].MCC == 0 ? "" : $"{dataItems[position].MCC}: {dataItems[position].MccDeskription}";
            
             return view;

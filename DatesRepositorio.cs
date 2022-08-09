@@ -38,7 +38,7 @@ namespace NavigationDrawerStarter
             }
             catch (Exception ex)
             {
-                
+
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
@@ -52,7 +52,6 @@ namespace NavigationDrawerStarter
                 using (var db = new DataItemContext(dbFullPath))
                 {
                     await db.Database.MigrateAsync(); //We need to ensure the latest Migration was added. This is different than EnsureDatabaseCreated.
-
                     if (newDataItems.Count > 0)
                     {
                         await db.Cats.AddRangeAsync(newDataItems);
@@ -118,7 +117,6 @@ namespace NavigationDrawerStarter
             {
                 foreach (var item in dataItems)
                 {
-
                     //if (!DataItems.Any(x => x.HashId  == item.HashId ))
                     //    newDataItems.Add(item);
                     //else
@@ -137,21 +135,55 @@ namespace NavigationDrawerStarter
 
                     //}
 
-
-                    if (!DataItems.Any(x => x.HashId == item.HashId))
-                        newDataItems.Add(item);
-                    else
+                    if (item.Date.Second == 0)
                     {
-                        if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.Sum == item.Sum))
-                            if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.OldSum == item.Sum))
-                                newDataItems.Add(item);
+                        if (!DataItems.Any(x => x.HashId == item.HashId))
+                            newDataItems.Add(item);
                         else
                         {
-                            if (!DataItems.Where(x => x.HashId == item.HashId).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
-                                newDataItems.Add(item);
+                            if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.Sum == item.Sum))
+                                if (!DataItems.Where(x => x.HashId == item.HashId).Where(x => x.Sum == item.Sum).Any(x => x.OldSum == item.Sum))
+                                    newDataItems.Add(item);
                         }
-
                     }
+                    else
+                    {
+                        if (!DataItems.Any(x => x.Date == item.Date))
+                            newDataItems.Add(item);
+                        else
+                        {
+                            if (!DataItems.Where(x => x.Date == item.Date).Any(x => x.Sum == item.Sum))
+                                if (!DataItems.Where(x => x.Date == item.Date).Any(x => x.OldSum == item.Sum))
+                                    newDataItems.Add(item);
+                        }
+                    }
+
+                    //else
+                    //{
+                    //    if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.Sum == item.Sum))
+                    //        //if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.OldSum == item.Sum))
+                    //            newDataItems.Add(item);
+                    //        else
+                    //        {
+                    //            if (!DataItems.Where(x => x.HashId == item.HashId).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
+                    //                newDataItems.Add(item);
+                    //        }
+                    //}
+
+                    //////////////////////////if (!DataItems.Any(x => x.HashId == item.HashId))
+                    //////////////////////////    newDataItems.Add(item);
+                    //////////////////////////else
+                    //////////////////////////{
+                    //////////////////////////    if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.Sum == item.Sum))
+                    //////////////////////////        if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.OldSum == item.Sum))
+                    //////////////////////////            newDataItems.Add(item);
+                    //////////////////////////    else
+                    //////////////////////////    {
+                    //////////////////////////        if (!DataItems.Where(x => x.HashId == item.HashId).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
+                    //////////////////////////            newDataItems.Add(item);
+                    //////////////////////////    }
+
+                    //////////////////////////}
 
 
                     //if (!DataItems.Any(x => x.Equals(item)))
@@ -166,16 +198,9 @@ namespace NavigationDrawerStarter
             }
             else
                 newDataItems = dataItems;
-
-
             stopWatch.Stop();
-
-
             Console.WriteLine(stopWatch.Elapsed);
-
-
             return newDataItems;
-
         }
         private static void UpdateAutLists(List<DataItem> dataItems)
         {
@@ -204,17 +229,16 @@ namespace NavigationDrawerStarter
                         newValue.Date.AddSeconds(1); //создаем потомка с различающимся временем в секундах
                                                      //HashId потомка остается таким же как у родителя
                                                      //при добавлении данных возможно повторное добовление родителя
-                newValue.ParentId = item.Id; 
-                AddDatas( new List<DataItem> { newValue });
+                newValue.ParentId = item.Id;
+                AddDatas(new List<DataItem> { newValue });
             }
             else
                 item?.SetNewValues(newValue);
-
             try
             {
                 using (var db = new DataItemContext(dbFullPath))
                 {
-                    var result = db.Cats.SingleOrDefault(x=>x.Id==id);
+                    var result = db.Cats.SingleOrDefault(x => x.Id == id);
                     if (result != null)
                     {
                         result.SetNewValues(item);
@@ -227,10 +251,6 @@ namespace NavigationDrawerStarter
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
-
-
-        
-
 
         public static List<DataItem> GetPayments(List<DataItem> dataItems)
         {

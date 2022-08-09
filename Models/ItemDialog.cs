@@ -19,9 +19,9 @@ using System.Linq;
 
 namespace NavigationDrawerStarter.Fragments
 {
-    public class EditItemDialog : AndroidX.Fragment.App.DialogFragment, View.IOnClickListener
+    public class ItemDialog : AndroidX.Fragment.App.DialogFragment, View.IOnClickListener
     {
-        public static string TAG = typeof(EditItemDialog).Name;
+        public static string TAG = typeof(ItemDialog).Name;
 
         private Toolbar toolbar;
         private Android.Widget.AutoCompleteTextView autocompleteTVOperTyp;
@@ -45,7 +45,7 @@ namespace NavigationDrawerStarter.Fragments
 
         private DataItem selectedItem;
 
-        public EditItemDialog(DataItem dataItem)
+        public ItemDialog(DataItem dataItem)
         {
             selectedItem = dataItem;
         }
@@ -65,6 +65,7 @@ namespace NavigationDrawerStarter.Fragments
             this.Activity.Window.SetSoftInputMode(SoftInput.AdjustPan | SoftInput.AdjustResize);
         }
 
+
         public override void OnStart()
         {
             base.OnStart();
@@ -77,6 +78,7 @@ namespace NavigationDrawerStarter.Fragments
                 //dialog.Window.SetWindowAnimations(Resource.Style.AppTheme_Slide);
             }
         }
+
 
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -197,8 +199,6 @@ namespace NavigationDrawerStarter.Fragments
             {
                 chipsText.Add(((Chip)chipGroup.GetChildAt(i)).Text);
             }
-
-
             foreach (string tag in tags)
             {
 
@@ -208,12 +208,8 @@ namespace NavigationDrawerStarter.Fragments
                     continue;
                 }
                 GreateChip(tag, false, inflater);
-
             }
             texstInput_CreateChip.Text = "";
-
-
-
             InputMethodManager imm = (InputMethodManager)Activity.GetSystemService(Context.InputMethodService);
             imm.HideSoftInputFromWindow(texstInput_CreateChip.WindowToken, 0);
 
@@ -232,11 +228,12 @@ namespace NavigationDrawerStarter.Fragments
             }
         }
 
+
         public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
             base.OnViewCreated(view, savedInstanceState);
             toolbar.SetNavigationOnClickListener(this);
-            toolbar.Title = selectedItem.Descripton;
+            //toolbar.Title = "Редактировать";
             toolbar.InflateMenu(Resource.Menu.addItem_dialog);
             toolbar.MenuItemClick += Toolbar_MenuItemClick;
         }
@@ -258,13 +255,6 @@ namespace NavigationDrawerStarter.Fragments
             }
             else
                 wrap_aut_comp_tv_OperationTyp.ErrorEnabled = false;
-
-            DateTime itDateTime = DateTime.Parse(date_text_edit1.Text + " " + date_text_edit2.Text);
-            while (DatesRepositorio.DataItems.Any(x => x.Date == itDateTime))
-                itDateTime = itDateTime.Second == 59 ?
-                    itDateTime.Date.AddSeconds(-itDateTime.Second) :
-                    itDateTime.Date.AddSeconds(1);
-
             #region DateCheck
             if (date_text_edit1.Text == "")
             {
@@ -273,16 +263,10 @@ namespace NavigationDrawerStarter.Fragments
             }
             else
                 textfieldDateCheck.ErrorEnabled = false;
+
             if (!DateTime.TryParse(date_text_edit1.Text, out DateTime dateResult))
             {
                 textfieldDateCheck.Error = "Не удается преобразовать значение к требуемому формату";
-                isError = true;
-            }
-            else
-                textfieldDateCheck.ErrorEnabled = false;
-            if (itDateTime.Date > DateTime.Now.Date)
-            {
-                textfieldDateCheck.Error = "Нельзя создавать транзакции будущих периодов!";
                 isError = true;
             }
             else
@@ -304,15 +288,6 @@ namespace NavigationDrawerStarter.Fragments
             }
             else
                 textfieldTimeCheck.ErrorEnabled = false;
-
-            if (itDateTime.TimeOfDay > DateTime.Now.TimeOfDay)
-            {
-                textfieldTimeCheck.Error = "Нельзя создавать транзакции будущих периодов!";
-                isError = true;
-            }
-            else
-                textfieldTimeCheck.ErrorEnabled = false;
-
             #endregion
             if (isError)
                 return false;

@@ -1,4 +1,5 @@
 ﻿using Android.Graphics.Drawables;
+using AndroidX.AppCompat.Content.Res;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics.Drawable;
 using Google.Android.Material.Badge;
@@ -15,9 +16,11 @@ namespace NavigationDrawerStarter
             public void OnConfigureTab(TabLayout.Tab p0, int p1)
             {
 
-                Drawable mIcon = ContextCompat.GetDrawable(p0.View.Context, MainActivity.tabIcons[p1]);
-                mIcon = DrawableCompat.Wrap(mIcon);
-                DrawableCompat.SetTint(mIcon, Android.Graphics.Color.Red);
+               //// Drawable mIcon = ContextCompat.GetDrawable(p0.View.Context, MainActivity.tabIcons[p1]);
+               // Drawable mIcon = AppCompatResources.GetDrawable(p0.View.Context, Resource.Mipmap.ic_cash50);
+               // mIcon = DrawableCompat.Wrap(mIcon);
+              
+               // DrawableCompat.SetTint(mIcon, Android.Graphics.Color.Red);
 
 
 
@@ -26,13 +29,13 @@ namespace NavigationDrawerStarter
                 //mIcon.SetColorFilter(Android.Graphics.Color.Red, Android.Graphics.PorterDuff.Mode.Multiply);
 
 
-                p0.SetIcon(mIcon);
+                //p0.SetIcon(mIcon);
 
 
                 //p0.SetText(MainActivity.fragmentTitles[p1]);
-              //p0.SetIcon(MainActivity.tabIcons[p1]);
+                p0.SetIcon(MainActivity.tabIcons[p1]);
                 //p0.SetText("The number of transactions and their amount will be displayed here");
-                
+
                 // p0.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
                 p0.SetText(p0.Text);
             }
