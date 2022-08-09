@@ -18,7 +18,7 @@ namespace NavigationDrawerStarter.Parsers
         public static float GetFloat(string numberString)
         {
             // numberString = "1,234.56"; // en
-                                           // var numberString = "1.234,56"; // de
+            // var numberString = "1.234,56"; // de
             var cultureInfo = CultureInfo.InvariantCulture;
             // if the first regex matches, the number string is in us culture
             if (Regex.IsMatch(numberString, @"^(:?[\d,]+\.)*\d+$"))
@@ -32,7 +32,7 @@ namespace NavigationDrawerStarter.Parsers
             }
             float number;
             NumberStyles styles = NumberStyles.Number;
-            bool isDouble = float.TryParse(numberString, styles, cultureInfo, out  number);
+            bool isDouble = float.TryParse(numberString, styles, cultureInfo, out number);
             if (isDouble)
                 return number;
             else

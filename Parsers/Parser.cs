@@ -78,7 +78,6 @@ namespace NavigationDrawerStarter.Parsers
             BankConfigurations = bankConfigurations;
             _pdfRepportPatch = pdfRepportPatch;
             //BankConfiguration bankConfiguration = _bankConfigurations[0];
-
         }
 
         async Task ParseStart(string pdfRepportPatch)
@@ -87,7 +86,6 @@ namespace NavigationDrawerStarter.Parsers
             int collCount = BankConfigurations[0].PdfReportTemplate.CollamnCount;
 
             List<string[]> resalt = new List<string[]>();
-
 
             await Task.Run(() =>
             {
@@ -110,13 +108,9 @@ namespace NavigationDrawerStarter.Parsers
                                 var pr = tb.Cells.Skip(collCount * k).Take(collCount).Select(x => x.GetText()).ToArray();
                                 resalt.Add(pr);
                             }
-
                         }
-
                     }
-
                 }
-
             });
 
             PdfToDataItem(resalt);
@@ -127,7 +121,6 @@ namespace NavigationDrawerStarter.Parsers
             foreach (var str in resalt)
             {
                 var bc = BankConfigurations[0].PdfReportTemplate;
-
                 var ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
                 ci.NumberFormat.NumberDecimalSeparator = ".";
 

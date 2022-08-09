@@ -5,7 +5,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace EfcToXamarinAndroid.Core
 {
-
     public class DataItem : IEquatable<DataItem>
     {
         [Key]

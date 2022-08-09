@@ -1,4 +1,6 @@
-﻿namespace EfcToXamarinAndroid.Core
+﻿using System;
+
+namespace EfcToXamarinAndroid.Core
 {
     public enum OperacionTyps
     {
