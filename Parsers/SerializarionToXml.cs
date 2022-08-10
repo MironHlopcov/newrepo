@@ -17,27 +17,36 @@ namespace NavigationDrawerStarter.Parsers
     public class SerializarionToXml
     {
 
-
-        public void SaveTofile(string filename)
+        XmlSerializer xmlFormat = new XmlSerializer(typeof(DataItem[]));
+        public void SaveToFile(string filename)
         {
-            XmlSerializer xmlFormat = new XmlSerializer(typeof(DataItem[]));
+           
             // сохранение массива в файл
 
 
-            using (var stringwriter = new System.IO.StringWriter())
-            {
-                var serializer = new XmlSerializer(typeof(DataItem));
-                var ggg = DatesRepositorio.DataItems.ToArray();
-                serializer.Serialize(stringwriter, ggg[2]);
-                var sdf  =  stringwriter.ToString();
-            }
+            //using (var stringwriter = new System.IO.StringWriter())
+            //{
+            //    var serializer = new XmlSerializer(typeof(DataItem));
+            //    var ggg = DatesRepositorio.DataItems.ToArray();
+            //    serializer.Serialize(stringwriter, ggg[2]);
+            //    var sdf  =  stringwriter.ToString();
+            //}
 
             using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate))
             {
+                XmlSerializer xmlFormat = new XmlSerializer(typeof(DataItem[]));
                 xmlFormat.Serialize(fs, DatesRepositorio.DataItems.ToArray());
             }
 
             
+        }
+        public DataItem[] DeserializeFile(string filename)
+        {
+            using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate))
+            {
+                DataItem[]? dataItems =   xmlFormat.Deserialize(fs) as DataItem[];
+                return dataItems;
+            }
         }
     }
 }

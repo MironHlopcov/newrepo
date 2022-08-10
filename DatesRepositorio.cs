@@ -117,24 +117,6 @@ namespace NavigationDrawerStarter
             {
                 foreach (var item in dataItems)
                 {
-                    //if (!DataItems.Any(x => x.HashId  == item.HashId ))
-                    //    newDataItems.Add(item);
-                    //else
-                    //{
-
-                    //    if (!DataItems.Where(x => x.HashId >> 4 == item.HashId >> 4).Any(x => x.Sum == item.Sum))
-                    //    {
-                    //        if(DataItems.Where(x => x.HashId >> 4 == item.HashId >> 4).Where(x => x.Sum == item.Sum).Any(x=>(x.HashId&15)==0))
-                    //        newDataItems.Add(item);
-                    //    }
-                    //    else
-                    //    {
-                    //        if (!DataItems.Where(x => x.HashId >> 4 == item.HashId >> 4).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
-                    //            newDataItems.Add(item);
-                    //    }
-
-                    //}
-
                     if (item.Date.Second == 0)
                     {
                         if (!DataItems.Any(x => x.HashId == item.HashId))
@@ -157,43 +139,6 @@ namespace NavigationDrawerStarter
                                     newDataItems.Add(item);
                         }
                     }
-
-                    //else
-                    //{
-                    //    if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.Sum == item.Sum))
-                    //        //if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.OldSum == item.Sum))
-                    //            newDataItems.Add(item);
-                    //        else
-                    //        {
-                    //            if (!DataItems.Where(x => x.HashId == item.HashId).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
-                    //                newDataItems.Add(item);
-                    //        }
-                    //}
-
-                    //////////////////////////if (!DataItems.Any(x => x.HashId == item.HashId))
-                    //////////////////////////    newDataItems.Add(item);
-                    //////////////////////////else
-                    //////////////////////////{
-                    //////////////////////////    if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.Sum == item.Sum))
-                    //////////////////////////        if (!DataItems.Where(x => x.HashId == item.HashId).Any(x => x.OldSum == item.Sum))
-                    //////////////////////////            newDataItems.Add(item);
-                    //////////////////////////    else
-                    //////////////////////////    {
-                    //////////////////////////        if (!DataItems.Where(x => x.HashId == item.HashId).Where(x => x.Sum == item.Sum).Any(x => x.Date == item.Date))
-                    //////////////////////////            newDataItems.Add(item);
-                    //////////////////////////    }
-
-                    //////////////////////////}
-
-
-                    //if (!DataItems.Any(x => x.Equals(item)))
-                    //    newDataItems.Add(item);
-                    //else
-                    //{
-                    //    if (!dataItems.Where(x => x.Equals(item)).Any(x => x.Sum == item.Sum))
-                    //        newDataItems.Add(item);
-                    //}
-
                 }
             }
             else
@@ -213,7 +158,6 @@ namespace NavigationDrawerStarter
 
             Cashs.Clear();
             Cashs.AddRange(GetCashs(ordetDataItems));
-
         }
         public static async Task UpdateItemValue(int id, DataItem newValue)
         {
@@ -225,7 +169,7 @@ namespace NavigationDrawerStarter
 
                 while (DatesRepositorio.DataItems.Any(x => x.Date == newValue.Date))
                     newValue.Date = newValue.Date.Second == 59 ?
-                        newValue.Date.AddSeconds(-item.Date.Second) :
+                        newValue.Date.AddSeconds(-59) :
                         newValue.Date.AddSeconds(1); //создаем потомка с различающимся временем в секундах
                                                      //HashId потомка остается таким же как у родителя
                                                      //при добавлении данных возможно повторное добовление родителя
@@ -278,7 +222,6 @@ namespace NavigationDrawerStarter
                 return mFilter;
             }
         }
-
         private static void MFilter_Filtred(object sender)
         {
             UpdateAutLists(((MFilter)sender).OutDataItems);

@@ -12,9 +12,13 @@
             android:id="@+id/nav_upload"
             android:icon="@android:drawable/ic_menu_upload"
             android:title="Upload database-file" />
+		<item
+            android:id="@+id/nav_restore"
+            android:icon="@drawable/ic_menu_download"
+            android:title="Restore database-file" />
         <item
             android:id="@+id/nav_db_clear"
-            android:icon="@android:drawable/ic_menu_slideshow"
+            android:icon="@drawable/my_delete_ic"
             android:title="Delete data from database-file" />
         <item
             android:id="@+id/nav_manage"

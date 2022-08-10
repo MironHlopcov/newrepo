@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Xml.Serialization;
 
 namespace EfcToXamarinAndroid.Core
 {
@@ -21,8 +22,11 @@ namespace EfcToXamarinAndroid.Core
         public DateTime Date { get; set; }
         public bool IsParent { get; private set; }
         public int ParentId { get; set; }
+        [XmlIgnore]
         public CategoryTyps DefaultCategoryTyps { get; private set; }
+        [XmlIgnore]
         public CategoryTyps CastomCategoryTyps { get; private set; }
+        [XmlIgnore]
         public List<SybCategory>? SubCategorys { get; private set; }
         public string? MccDeskription { get; set; }
 

@@ -86,10 +86,10 @@ namespace NavigationDrawerStarter.Fragments
             //adp1 = new ArrayAdapter(this.Context, Android.Resource.Layout.SimpleListItem1, FiltredList);
             adp1 = new MyArrayAdapter(this.Context, Android.Resource.Layout.SimpleListItem1, FiltredList);
 
-
             lv1.Adapter = adp1;
             adp1.Filter.InvokeFilter("!@$#$^%&%^*&^(*&(*&)(*(&*&^(*^%&$&^#^%#&$"); //todo
             sv1.QueryTextChange += Sv1_QueryTextChange;
+           
             sv1.FocusChange += Sv1_FocusChange;
             lv1.ItemClick += Lv1_ItemClick;
             #endregion
@@ -133,6 +133,8 @@ namespace NavigationDrawerStarter.Fragments
             return searchFragmt;
         }
 
+      
+
         public void AddChekFilterItem(string groupName, List<string> childItems)
         {
             List<ExpandableChildModel> groupData = new List<ExpandableChildModel>();
@@ -150,7 +152,10 @@ namespace NavigationDrawerStarter.Fragments
 
         }
 
-
+        private void SearchFragmt_FocusChange(object sender, View.FocusChangeEventArgs e)
+        {
+           
+        }
 
         #region DateEdit
         private void Text_edit1_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
@@ -198,10 +203,10 @@ namespace NavigationDrawerStarter.Fragments
         #region SerchView
         private void Sv1_FocusChange(object sender, View.FocusChangeEventArgs e)
         {
-            //if (sv1.IsFocused)
-            //     sv1.Iconified = false;
-            //else
-            //     sv1.Iconified = true;
+            if (sv1.IsFocused)
+                 lv1.Visibility = ViewStates.Visible;
+            else
+                lv1.Visibility = ViewStates.Invisible;
         }
         private void Sv1_QueryTextChange(object sender, SearchView.QueryTextChangeEventArgs e)
         {

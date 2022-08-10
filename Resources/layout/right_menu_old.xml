@@ -6,11 +6,6 @@
     android:layout_height="match_parent"
     android:layout_marginRight="10dp"
     android:layout_marginLeft="10dp">
-   
-   
-     
-
-
     <TextView
         android:text="@string/filters_form_title"
         android:textAppearance="?android:attr/textAppearanceMedium"

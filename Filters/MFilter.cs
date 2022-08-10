@@ -30,7 +30,19 @@ namespace NavigationDrawerStarter.Filters
             IEnumerable<DataItem> query;
             if (OutDataItems == null)
                 query = InDataItems.AsQueryable().Where(dataItemFilter);
-            else query = OutDataItems.AsQueryable().Where(dataItemFilter);
+            else
+                query = OutDataItems.AsQueryable().Where(dataItemFilter);
+            OutDataItems = query.ToList();
+            OnFiltredClose(this);
+            return OutDataItems;
+        }
+        public List<DataItem> GetResult(Expression<Func<DataItem, bool>> dataItemFilter, Expression<Func<DataItem, bool>> dataItemFilter2)
+        {
+            IEnumerable<DataItem> query;
+            if (OutDataItems == null)
+                query = InDataItems.AsQueryable().Where(dataItemFilter);
+            else
+                query = OutDataItems.AsQueryable().Where(dataItemFilter);
             OutDataItems = query.ToList();
             OnFiltredClose(this);
             return OutDataItems;

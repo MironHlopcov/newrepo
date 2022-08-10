@@ -50,11 +50,11 @@ namespace NavigationDrawerStarter
         {
             savedInstanceState = null;
             base.OnCreate(savedInstanceState);
-         
-            #region Stock
-            //base.OnCreate(savedInstanceState);
             if (savedInstanceState == null)
             {
+                #region Stock
+                //base.OnCreate(savedInstanceState);
+
                 Xamarin.Essentials.Platform.Init(this, savedInstanceState);
                 SetContentView(Resource.Layout.activity_main);
 
@@ -162,18 +162,16 @@ namespace NavigationDrawerStarter
         {
             //outState.PutInt("click_count", _counter);
             //Log.Debug(GetType().FullName, "Activity A - Saving instance state");
-
             // always call the base implementation!
 
             var tabSelectedPosition = tabLayout.SelectedTabPosition;
             outState.PutInt("selectedTabPosition", tabSelectedPosition);
-
             base.OnSaveInstanceState(outState);
         }
 
         protected override void OnRestoreInstanceState(Bundle savedInstanceState)
         {
-           // base.OnRestoreInstanceState(savedInstanceState);
+            // base.OnRestoreInstanceState(savedInstanceState);
         }
 
 
@@ -230,8 +228,9 @@ namespace NavigationDrawerStarter
             adapter.UpdateFragments();
         }
 
-        async Task<FileResult> PickAndShow(PickOptions options)
+        async Task<bool> PickAndShowFromPdf(PickOptions options)
         {
+            bool isOk = false;
             #region ConfigManager
             ConfigurationManager configManager = ConfigurationManager.ConfigManager;
             var configuration = configManager.BankConfigurationFromJson;
@@ -248,16 +247,44 @@ namespace NavigationDrawerStarter
                     //adapter.UpdateFragments();
                     //adapter.NotifyDataSetChanged();
                     UpdateBadgeToTabs();
+                    isOk = true;
                 }
-                return result;
+                return isOk;
             }
             catch (Exception ex)
             {
                 // The user canceled or something went wrong
+                return isOk;
+            }
+        }
+        async Task<bool> PickAndShowFromFile(PickOptions options)
+        {
+            bool isOk = false;
+            try
+            {
+                var result = await FilePicker.PickAsync(options);
+                if (result != null)
+                {
+                    bool isReadonly = Android.OS.Environment.MediaMountedReadOnly.Equals(Android.OS.Environment.ExternalStorageState);
+                    bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
+
+                    SerializarionToXml serializer = new SerializarionToXml();
+                    var data  = serializer.DeserializeFile(result.FullPath);
+                    await DatesRepositorio.AddDatas(data.ToList());//This operation took 10825
+                    UpdateBadgeToTabs(); 
+                    isOk = true;
+                }
+                return isOk;
+            }
+            catch (Exception ex)
+            {
+                // The user canceled or something went wrong
+                return isOk;
             }
 
-            return null;
+          
         }
+
 
         #region Stock
         public override void OnBackPressed()
@@ -387,7 +414,18 @@ namespace NavigationDrawerStarter
                                     fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.MccDeskription)).ToArray();
                                     break;
                                 case "Тег":
-                                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.Title)).ToArray();
+                                    var a1 = item.Value.Where(r => r.IsCheked).Select(w => w.Name).ToArray();
+                                    //var a4 = DatesRepositorio.DataItems.Where(q=> q.Title != null && a1.Any(x => q.Title.Contains(x))).ToArray();
+                                    //var a41 = DatesRepositorio.DataItems.Where(q=> q.Title != null && a1.Where(x => q.Title.Contains(x)).ToArray().Length==a1.Length).ToArray();
+                                    //var a23 = DatesRepositorio.DataItems.Where(q => q.Title != null && q.Title.Split(' ').Intersect(a1).ToArray().Length==a1.Length).ToArray();
+                                    //var a24 = DatesRepositorio.DataItems.Where(q => q.Title != null).Where(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).ToArray().Intersect(q.Title.Split(' ')).ToArray().Length== item.Value.Where(r => r.IsCheked).Select(w => w.Name).ToArray().Length).ToArray();
+                                    //var a234 = DatesRepositorio.DataItems.Where(q => q.Title != null).Where(q => q.Title.Split(' ').Intersect(item.Value.Where(r => r.IsCheked).Select(w => w.Name)).ToArray().Length== item.Value.Where(r => r.IsCheked).Select(w => w.Name).ToArray().Length).ToArray();
+                                    //var a5 = DatesRepositorio.DataItems.Where(q=>q.Title!=null).Where(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Any(x =>q.Title.Contains(x))).ToArray();
+                                    //var a3 = a1.Where(x=>DatesRepositorio.DataItems.Any(q => q.Title.Contains(x)));                                    //var a2 = DatesRepositorio.DataItems.Select(q => a1.Intersect(q.Title.Split(' ')).Count>0);
+
+                                    //fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.Title)).ToArray(); //искать полные соответвия тегов
+                                    //fltr.GetResult(q => q.Title != null && item.Value.Where(r => r.IsCheked).Select(w => w.Name).Any(x => q.Title.Contains(x))).ToArray(); //искать хотябы одно соответствие тега
+                                    fltr.GetResult(q => q.Title != null && a1.Where(x => q.Title.Contains(x)).ToArray().Length == a1.Length).ToArray(); //искать полные соответвия тегов
                                     break;
                             }
                         }
@@ -431,7 +469,10 @@ namespace NavigationDrawerStarter
                     //FileTypes = customFileType,
                 };
 
-                PickAndShow(options);
+                //PickAndShowFromPdf(options);
+                string message;
+                message = PickAndShowFromPdf(options).Result ? "Файл обработан." : "Произошла ошибка.";
+                Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
             }
             if (id == Resource.Id.nav_db_clear)
             {
@@ -447,6 +488,7 @@ namespace NavigationDrawerStarter
                     string message;
                     message = await DatesRepositorio.DeleteAllItems() ? "База данных очищена." : "Произошла ошибка очистки базы данных.";
                     Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+                    UpdateBadgeToTabs();
                 });
                 builder.SetNegativeButton("Отмена", (c, ev) =>
                 {
@@ -461,16 +503,18 @@ namespace NavigationDrawerStarter
             if (id == Resource.Id.nav_upload)
             {
 
-                //bool isReadonly = Android.OS.Environment.MediaMountedReadOnly.Equals(Android.OS.Environment.ExternalStorageState);
-                //bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
+                bool isReadonly = Android.OS.Environment.MediaMountedReadOnly.Equals(Android.OS.Environment.ExternalStorageState);
+                bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
 
-                //SerializarionToXml serializer = new SerializarionToXml();
+                SerializarionToXml serializer = new SerializarionToXml();
 
-                //string documentsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath ;
-                //string localFilename = $"FinReport.xml";
-                //string localPath = Path.Combine(documentsPath, localFilename);
+                string documentsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
+                string localFilename = $"FinReport{DateTime.Now.ToString().Replace('.','_').Replace(':', '_')}.xml";
+                string localPath = Path.Combine(documentsPath, localFilename);
 
-                //serializer.SaveTofile(localPath);
+                serializer.SaveToFile(localPath);
+                //serializer.DeserializeFile(localPath);
+
 
 
 
@@ -576,7 +620,17 @@ namespace NavigationDrawerStarter
                 //    drawer.OpenDrawer(GravityCompat.End);
                 //}
             }
-
+            if (id == Resource.Id.nav_restore)
+            {
+                var options = new PickOptions
+                {
+                    PickerTitle = "@string/select_pdf_report"
+                    //FileTypes = customFileType,
+                };
+                string message;
+                message = PickAndShowFromFile(options).Result ? "Файл обработан." : "Произошла ошибка.";
+                Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+            }
             return true;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
