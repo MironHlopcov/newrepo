@@ -5,7 +5,8 @@ using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Threading.Tasks;
-
+using Android.Content;
+using Android.Content.Res;
 using Android.OS;
 using Android.Runtime;
 
@@ -48,6 +49,12 @@ namespace NavigationDrawerStarter
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
+
+            //Configuration config = this.Resources.Configuration;
+            //var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
+            //if (ThemeMode) this.SetTheme(Resource.Style.DarkTheme);
+            //else this.SetTheme(Resource.Style.LightTheme);
+
             savedInstanceState = null;
             base.OnCreate(savedInstanceState);
             if (savedInstanceState == null)
@@ -90,6 +97,7 @@ namespace NavigationDrawerStarter
                 tabLayout.TabGravity = 0;
 
                 pager = FindViewById<ViewPager2>(Resource.Id.pager);
+                pager.OffscreenPageLimit=2;
 
                 tabLayout.TabSelected += (object sender, TabLayout.TabSelectedEventArgs e) =>
                 {
@@ -103,6 +111,8 @@ namespace NavigationDrawerStarter
                     layoutParams.Width = LinearLayoutCompat.LayoutParams.WrapContent;
 
                     layout.LayoutParameters = layoutParams;
+                    var asdf = pager.ChildCount;
+                    //pager.ScrollY = 1;
                 };
                 tabLayout.TabUnselected += (object sender, TabLayout.TabUnselectedEventArgs e) =>
                 {
@@ -118,9 +128,9 @@ namespace NavigationDrawerStarter
                 adapter = new CustomViewPager2Adapter(this.SupportFragmentManager, this.Lifecycle);
                 tabIcons = new int[]
                 {
-            Resource.Mipmap.ic_cash50,
-            Resource.Mipmap.ic_in_deposit50,
-            Resource.Mipmap.ic_cashOut51
+                    Resource.Mipmap.ic_cash50,
+                    Resource.Mipmap.ic_in_deposit50,
+                    Resource.Mipmap.ic_cashOut51
                 };
                 pager.Adapter = adapter;
 
@@ -137,11 +147,11 @@ namespace NavigationDrawerStarter
                 #endregion
             }
         }
+        #region ViewLifecucle
         protected override void OnStart()
         {
             base.OnStart();
         }
-
         protected override void OnResume()
         {
             base.OnResume();
@@ -168,12 +178,11 @@ namespace NavigationDrawerStarter
             outState.PutInt("selectedTabPosition", tabSelectedPosition);
             base.OnSaveInstanceState(outState);
         }
-
         protected override void OnRestoreInstanceState(Bundle savedInstanceState)
         {
             // base.OnRestoreInstanceState(savedInstanceState);
         }
-
+        #endregion
 
         private async Task ParseSmsToDbAsync(List<BankConfiguration> bankConfigurations)
         {
@@ -638,6 +647,12 @@ namespace NavigationDrawerStarter
             Xamarin.Essentials.Platform.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
             base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
+        }
+
+        protected override void AttachBaseContext(Context @base)
+        {
+            base.AttachBaseContext(@base);
+            
         }
         #endregion
 

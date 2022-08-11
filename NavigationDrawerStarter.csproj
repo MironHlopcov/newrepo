@@ -93,6 +93,7 @@
     <Compile Include="Models\PdfReportTemplate.cs" />
     <Compile Include="Models\Sms.cs" />
     <Compile Include="Models\SmsParseRegex.cs" />
+    <Compile Include="NoScrollExList\NoScrollListView.cs" />
     <Compile Include="NoScrollExList\NoScrollExListView.cs" />
     <Compile Include="Parsers\Parser.cs" />
     <Compile Include="Parsers\ParseStringToFloat.cs" />
@@ -126,7 +127,6 @@
     <AndroidResource Include="Resources\values\ic_launcher_background.xml" />
     <AndroidResource Include="Resources\values\strings.xml" />
     <AndroidResource Include="Resources\values\styles.xml" />
-    <AndroidResource Include="Resources\values-v21\styles.xml" />
     <AndroidResource Include="Resources\drawable\side_nav_bar.xml" />
     <AndroidResource Include="Resources\menu\activity_main_drawer.xml" />
     <AndroidResource Include="Resources\menu\menu_main.xml" />
@@ -323,12 +323,6 @@
   </ItemGroup>
   <ItemGroup>
     <AndroidResource Include="Resources\layout\right_menu_old.xml">
-      <Generator>MSBuild:UpdateGeneratedFiles</Generator>
-      <SubType>Designer</SubType>
-    </AndroidResource>
-  </ItemGroup>
-  <ItemGroup>
-    <AndroidResource Include="Resources\layout\nav_header_main2.xml">
       <Generator>MSBuild:UpdateGeneratedFiles</Generator>
       <SubType>Designer</SubType>
     </AndroidResource>

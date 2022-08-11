@@ -1,11 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
-    style="@style/AppTheme.Chip.Choice"
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-     android:layout_marginRight="10dp"
+    android:layout_marginRight="10dp"
     android:layout_marginLeft="10dp">
     <CheckBox
         android:id="@+id/cb_child"
@@ -15,7 +14,7 @@
         android:layout_marginLeft="0dp"
         android:paddingRight="23dp"
         android:layout_alignParentLeft="true"
-         android:layout_centerVertical="true"/>
+        android:layout_centerVertical="true"/>
     <TextView
         android:id="@+id/txtChildText"
         android:layout_width="match_parent"
@@ -29,7 +28,6 @@
         android:gravity="center_vertical"
         android:maxLines="1"
         android:layout_toLeftOf="@+id/imageortext"
-        android:textColor="@android:color/black"
         android:layout_centerVertical="true"/>
     <ImageView
         android:id="@+id/imageortext"
@@ -43,7 +41,6 @@
     <TextView
         android:text="Draft"
         android:textSize="16dp"
-        android:textColor="#a4672a"
         android:id="@+id/textorimage"
         android:textStyle="italic"
         android:visibility="gone"

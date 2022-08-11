@@ -81,7 +81,8 @@ namespace NavigationDrawerStarter.Fragments
             #region SerchView
             View searchFragmt = inflater.Inflate(Resource.Layout.right_menu, container, false);
             sv1 = searchFragmt.FindViewById<SearchView>(Resource.Id.searchView);
-            lv1 = searchFragmt.FindViewById<ListView>(Resource.Id.listViewToSearchView);
+            lv1 = searchFragmt.FindViewById<NoScrollListView>(Resource.Id.listViewToSearchView);
+            lv1.Visibility = ViewStates.Invisible;
 
             //adp1 = new ArrayAdapter(this.Context, Android.Resource.Layout.SimpleListItem1, FiltredList);
             adp1 = new MyArrayAdapter(this.Context, Android.Resource.Layout.SimpleListItem1, FiltredList);
@@ -90,7 +91,7 @@ namespace NavigationDrawerStarter.Fragments
             adp1.Filter.InvokeFilter("!@$#$^%&%^*&^(*&(*&)(*(&*&^(*^%&$&^#^%#&$"); //todo
             sv1.QueryTextChange += Sv1_QueryTextChange;
            
-            sv1.FocusChange += Sv1_FocusChange;
+            sv1.FocusChange += FocusChange;
             lv1.ItemClick += Lv1_ItemClick;
             #endregion
 
@@ -101,6 +102,8 @@ namespace NavigationDrawerStarter.Fragments
             //text_edit2.Text = DateTime.Now.ToShortDateString();
             date_text_edit1.TextChanged += Text_edit1_TextChanged;
             date_text_edit2.TextChanged += Text_edit2_TextChanged;
+            date_text_edit1.FocusChange += FocusChange;
+            date_text_edit2.FocusChange += FocusChange;
 
             btn_calendar1 = searchFragmt.FindViewById<Button>(Resource.Id.btn_calendar1);
             btn_calendar2 = searchFragmt.FindViewById<Button>(Resource.Id.btn_calendar2);
@@ -119,6 +122,7 @@ namespace NavigationDrawerStarter.Fragments
             expandableList = searchFragmt.FindViewById(Resource.Id.expandList) as NoScrollExListView;
             listAdapter = new ExpandableListAdapter(Activity, listChildData);
             expandableList.SetAdapter(listAdapter);
+            expandableList.GroupExpand += ExpandableList_Click; ;
             #endregion
 
             #region OKClearButton
@@ -132,8 +136,12 @@ namespace NavigationDrawerStarter.Fragments
             // Use this to return your custom view for this Fragment
             return searchFragmt;
         }
-
-      
+        
+        #region ExpandebleList
+        private void ExpandableList_Click(object sender, EventArgs e)
+        {
+            lv1.Visibility = ViewStates.Gone;
+        }
 
         public void AddChekFilterItem(string groupName, List<string> childItems)
         {
@@ -146,26 +154,21 @@ namespace NavigationDrawerStarter.Fragments
             listChildData.Add(new ExpandableGroupModel { Name = groupName, IsCheked = false }, groupData);
 
         }
-        public override void OnSaveInstanceState(Bundle outState)
-        {
-            base.OnSaveInstanceState(outState);
-
-        }
-
-        private void SearchFragmt_FocusChange(object sender, View.FocusChangeEventArgs e)
-        {
-           
-        }
+#endregion
 
         #region DateEdit
         private void Text_edit1_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
         {
+            lv1.Visibility = ViewStates.Gone;
+
             if (((EditText)sender).Text != "")
                 btn_clear_clear1.Visibility = ViewStates.Visible;
             else btn_clear_clear1.Visibility = ViewStates.Gone;
         }
         private void Text_edit2_TextChanged(object sender, Android.Text.TextChangedEventArgs e)
         {
+            lv1.Visibility = ViewStates.Gone;
+
             if (((EditText)sender).Text != "")
                 btn_clear_clear2.Visibility = ViewStates.Visible;
             else btn_clear_clear2.Visibility = ViewStates.Gone;
@@ -180,6 +183,7 @@ namespace NavigationDrawerStarter.Fragments
         }
         private void Btn_calendar1_Click(object sender, EventArgs e)
         {
+            lv1.Visibility = ViewStates.Gone;
             new DatePickerFragment(delegate (DateTime time)
             {
                 var _selectedDate = time;
@@ -190,6 +194,7 @@ namespace NavigationDrawerStarter.Fragments
         }
         private void Btn_calendar2_Click(object sender, EventArgs e)
         {
+            lv1.Visibility = ViewStates.Gone;
             new DatePickerFragment(delegate (DateTime time)
             {
                 var _selectedDate = time;
@@ -201,7 +206,7 @@ namespace NavigationDrawerStarter.Fragments
         #endregion
 
         #region SerchView
-        private void Sv1_FocusChange(object sender, View.FocusChangeEventArgs e)
+        private void FocusChange(object sender, View.FocusChangeEventArgs e)
         {
             if (sv1.IsFocused)
                  lv1.Visibility = ViewStates.Visible;
@@ -264,6 +269,12 @@ namespace NavigationDrawerStarter.Fragments
 
         }
         #endregion
+
+        public override void OnSaveInstanceState(Bundle outState)
+        {
+            base.OnSaveInstanceState(outState);
+
+        }
         public List<string> FiltredList
         {
             get
@@ -278,6 +289,8 @@ namespace NavigationDrawerStarter.Fragments
         }
 
     }
+
+
     public class FilterItems
     {
         public string[] SearchDiscriptions { get; private set; }

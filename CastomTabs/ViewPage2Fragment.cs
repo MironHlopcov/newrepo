@@ -126,7 +126,6 @@ namespace NavigationDrawerStarter
                 };
                 dialog.Display(Activity.SupportFragmentManager);
             }
-
             public bool OnItemLongClick(AdapterView parent, View view, int position, long id)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(Activity);
@@ -157,7 +156,6 @@ namespace NavigationDrawerStarter
                 builder.Show();
                 return true;
             }
-
             private PlotModel CreatePlotModel2(string diskr, float sum, float count, float sumMcc, float countMcc)
             {
                 var plotModel1 = new PlotModel
