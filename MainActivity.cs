@@ -53,7 +53,14 @@ namespace NavigationDrawerStarter
             //Configuration config = this.Resources.Configuration;
             //var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
             //if (ThemeMode) this.SetTheme(Resource.Style.DarkTheme);
-            //else this.SetTheme(Resource.Style.LightTheme);
+            //else this.SetTheme(Resource.Style.LightTheme); 
+
+            Configuration config = this.Resources.Configuration;
+            var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
+            if (ThemeMode)
+                AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightYes;
+            else
+                AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
 
             savedInstanceState = null;
             base.OnCreate(savedInstanceState);
