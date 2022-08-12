@@ -36,7 +36,7 @@ namespace NavigationDrawerStarter
                 p0.SetIcon(MainActivity.tabIcons[p1]);
                 //p0.SetText("The number of transactions and their amount will be displayed here");
 
-                // p0.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
+                p0.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
                 p0.SetText(p0.Text);
             }
            

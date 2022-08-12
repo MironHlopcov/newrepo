@@ -149,9 +149,7 @@
                         android:layout_height="wrap_content"
                         android:layout_width="match_parent"
                         android:groupIndicator="@null"
-                        android:background="@android:color/white"
-                        android:dividerHeight="1dp"
-                       />
+                        android:dividerHeight="1dp"/>
              
 
             </FrameLayout>

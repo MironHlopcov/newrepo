@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!--android:background="@color/colorPrimary"-->
     <LinearLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="vertical"
@@ -20,8 +21,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
-            android:id="@+id/searchView"
-            android:theme="@style/AppTheme.SearchView" />
+            android:id="@+id/searchView"/>
    
     <ListView
             android:minWidth="25dp"

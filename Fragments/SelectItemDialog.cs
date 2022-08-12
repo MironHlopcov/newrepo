@@ -1,5 +1,6 @@
 ﻿using Android.App;
 using Android.Content;
+using Android.Content.Res;
 using Android.OS;
 using Android.Text;
 using Android.Views;
@@ -167,7 +168,6 @@ namespace NavigationDrawerStarter.Fragments
             }
             #endregion
 
-
             #region Total
             var totalSummText = view.FindViewById<TextView>(Resource.Id.TotalSummTextView);
             var totalTransText = view.FindViewById<TextView>(Resource.Id.TotalTransactionTextView);
@@ -232,7 +232,6 @@ namespace NavigationDrawerStarter.Fragments
             base.OnViewCreated(view, savedInstanceState);
             toolbar.SetNavigationOnClickListener(this);
             toolbar.Title = selectedItem.Descripton;
-
         }
 
         private void Toolbar_MenuItemClick(object sender, AndroidX.AppCompat.Widget.Toolbar.MenuItemClickEventArgs e)
@@ -275,6 +274,7 @@ namespace NavigationDrawerStarter.Fragments
         private int[] ColorTransCount { get; set; } = new int[3] { 0, 191, 255 };
         private int[] ColorSumMcc { get; set; } = new int[3] { 255, 140, 0 };
         private int[] ColorCountMcc { get; set; } = new int[3] { 46, 139, 87 };
+        private int[] BackDarck { get; set; } = new int[3] { 64, 64, 64 };
 
         private PlotModel CreatePlotModel2(string diskr, float sum, float count, float sumMcc, float countMcc)
         {
@@ -290,12 +290,29 @@ namespace NavigationDrawerStarter.Fragments
                 }
             };
 
+            OxyColor shareColor;
+            OxyColor textColor;
+            Configuration config = this.Resources.Configuration;
+            var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
+            if (ThemeMode)
+            {
+                shareColor = OxyColor.FromRgb((byte)BackDarck[0], (byte)BackDarck[1], (byte)BackDarck[2]);
+                textColor = OxyColors.WhiteSmoke;
+            }
+            else
+            {
+                textColor = OxyColor.FromRgb((byte)BackDarck[0], (byte)BackDarck[1], (byte)BackDarck[2]);
+                shareColor = OxyColors.WhiteSmoke;
+            }
+
             var plotModelWidth = plotModel1.Width;
 
             var pieSeriessumCountMcc = new CustomPieSeries();
+            
             pieSeriessumCountMcc.Diameter = 1;
             pieSeriessumCountMcc.StartAngle = 60;
-            pieSeriessumCountMcc.UnVisebleFillColors = OxyColors.WhiteSmoke;
+            pieSeriessumCountMcc.TextColor = textColor;
+            pieSeriessumCountMcc.UnVisebleFillColors = shareColor;
             pieSeriessumCountMcc.Slices.Add(new PieSlice("", countMcc)
             {
                 Fill = OxyColor.FromRgb((byte)ColorCountMcc[0], (byte)ColorCountMcc[1], (byte)ColorCountMcc[2])
@@ -305,7 +322,8 @@ namespace NavigationDrawerStarter.Fragments
             var pieSeriesSumMcc = new CustomPieSeries();
             pieSeriesSumMcc.Diameter = 0.8;
             pieSeriesSumMcc.StartAngle = 40;
-            pieSeriesSumMcc.UnVisebleFillColors = OxyColors.WhiteSmoke;
+            pieSeriesSumMcc.TextColor = textColor;
+            pieSeriesSumMcc.UnVisebleFillColors = shareColor;
             pieSeriesSumMcc.Slices.Add(new PieSlice("", sumMcc)
             {
                 Fill = OxyColor.FromRgb((byte)ColorSumMcc[0], (byte)ColorSumMcc[1], (byte)ColorSumMcc[2])
@@ -315,7 +333,8 @@ namespace NavigationDrawerStarter.Fragments
             var pieSeriesCount = new CustomPieSeries();
             pieSeriesCount.Diameter = 0.5;
             pieSeriesCount.StartAngle = 20;
-            pieSeriesCount.UnVisebleFillColors = OxyColors.WhiteSmoke;
+            pieSeriesCount.TextColor = textColor;
+            pieSeriesCount.UnVisebleFillColors = shareColor;
             pieSeriesCount.Slices.Add(new PieSlice("", count)
             {
                 Fill = OxyColor.FromRgb((byte)ColorTransCount[0], (byte)ColorTransCount[1], (byte)ColorTransCount[2])
@@ -324,7 +343,8 @@ namespace NavigationDrawerStarter.Fragments
 
             var pieSeriesSum = new CustomPieSeries();
             pieSeriesSum.StartAngle = 0;
-            pieSeriesSum.UnVisebleFillColors = OxyColors.WhiteSmoke;
+            pieSeriesSum.TextColor = textColor;
+            pieSeriesSum.UnVisebleFillColors = shareColor;
             pieSeriesSum.Diameter = 0.2;
 
             pieSeriesSum.Slices.Add(new PieSlice("", sum)

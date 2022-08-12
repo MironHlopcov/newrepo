@@ -5,7 +5,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginRight="10dp"
-    android:layout_marginLeft="10dp">
+    android:layout_marginLeft="10dp"
+   >
+    <androidx.cardview.widget.CardView
+         android:layout_width="match_parent"
+         android:layout_height="wrap_content">
     <CheckBox
         android:id="@+id/cb_child"
         android:layout_width="wrap_content"
@@ -15,12 +19,14 @@
         android:paddingRight="23dp"
         android:layout_alignParentLeft="true"
         android:layout_centerVertical="true"/>
+     
     <TextView
         android:id="@+id/txtChildText"
+           
         android:layout_width="match_parent"
         android:layout_height="53dp"
         android:text="Text"
-        android:paddingTop="10dp"
+        android:paddingTop="5dp"
         android:paddingBottom="10dp"
         android:layout_marginLeft="47.5dp"
         android:ellipsize="end"
@@ -29,6 +35,7 @@
         android:maxLines="1"
         android:layout_toLeftOf="@+id/imageortext"
         android:layout_centerVertical="true"/>
+        
     <ImageView
         android:id="@+id/imageortext"
         android:layout_width="wrap_content"
@@ -49,4 +56,5 @@
         android:paddingTop="20dp"
         android:paddingRight="19dp"        
         android:layout_alignParentRight="true"/>
+    </androidx.cardview.widget.CardView>
 </RelativeLayout>

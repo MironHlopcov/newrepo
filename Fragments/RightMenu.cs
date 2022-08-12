@@ -74,6 +74,7 @@ namespace NavigationDrawerStarter.Fragments
         public override void OnCreate(Bundle savedInstanceState)
         {
             base.OnCreate(savedInstanceState);
+            //SetStyle(AndroidX.Fragment.App.DialogFragment.StyleNormal, Resource.Style.AppTheme_FullScreenDialog);
         }
         public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
         {
@@ -122,7 +123,7 @@ namespace NavigationDrawerStarter.Fragments
             expandableList = searchFragmt.FindViewById(Resource.Id.expandList) as NoScrollExListView;
             listAdapter = new ExpandableListAdapter(Activity, listChildData);
             expandableList.SetAdapter(listAdapter);
-            expandableList.GroupExpand += ExpandableList_Click; ;
+            expandableList.GroupExpand += ExpandableList_Click; 
             #endregion
 
             #region OKClearButton

@@ -3,6 +3,7 @@ using Android.Views;
 using Android.Widget;
 using EfcToXamarinAndroid.Core;
 using NavigationDrawerStarter.Filters;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 
@@ -75,7 +76,11 @@ namespace NavigationDrawerStarter
             //txtSum.Text = dataItems[position].OldSum.ToString() +":"+ string.Format("{0:F}", dataItems[position].Sum);
             //txtSum.Text = dataItems[position].Sum.ToString(CultureInfo.InvariantCulture);
             txtDeskr.Text = dataItems[position].Descripton;
-            txtDate.Text = dataItems[position].Date.ToShortDateString();
+            //txtDate.Text = dataItems[position].Date.ToShortDateString();
+            if(dataItems[position].Date.Year==DateTime.Now.Year)
+                txtDate.Text = dataItems[position].Date.ToString("dd.MM");
+            else
+                txtDate.Text = dataItems[position].Date.ToString("dd.MM.yyyy");
             txtTime.Text = dataItems[position].Date.ToLongTimeString();
             txtMcc.Text = dataItems[position].MCC == 0 ? "" : $"{dataItems[position].MCC}: {dataItems[position].MccDeskription}";
            

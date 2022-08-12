@@ -18,79 +18,28 @@
 		Theme.MaterialComponents.DayNight-->
 	<style name="AppTheme" parent="Theme.MaterialComponents.DayNight">
 		<!-- Customize your theme here. -->
-		<item name="colorPrimary">#005005</item>
-		
-
-
-	
-	</style>
-
-
-	<style name="DarkTheme">
-
 		<item name="colorPrimary">@color/colorPrimaryNight</item>
 		<item name="colorPrimaryDark">@color/colorPrimaryDarkNight</item>
 		<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
 		<item name="colorOnPrimary">@color/colorOnPrimary</item>
-
-	
-		<item name="colorOnSurface">@color/colorOnSurface</item>
-		<item name="colorSurface">@color/colorSurface</item>
-
 		<item name="colorAccent">@color/colorAccentNight</item>
 
-		<item name="colorSecondary">@color/colorSecondaryNight</item>
-		<item name="colorOnSecondary">@color/colorOnSecondary</item>
-		<item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+		<item name="alertDialogTheme">@style/MyAlertDialogTheme</item>
+	</style>
+	<style name="MyAlertDialogTheme" parent="AppTheme">
+		<item name="android:textColor">@color/colorAccentNight</item>
 	</style>
 
-	<style name="LightTheme">
-		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorPrimaryVariant">@color/colorPrimaryVariant</item>
-		<item name="colorOnPrimary">@color/colorOnPrimary</item>
-
-		<item name="colorOnSurface">@color/colorSurface</item>
-		<item name="colorSurface">@color/colorOnSurface</item>
-
-		<item name="colorAccent">@color/colorAccent</item>
-
-		<item name="colorSecondary">@color/colorSecondary</item>
-		<item name="colorOnSecondary">@color/colorOnSecondary</item>
-		<item name="colorSecondaryVariant">@color/colorSecondaryVariant</item>
+	<style name="MyTextAppearance" parent="TextAppearance.AppCompat">
+		<item name="android:textColor">@color/colorAccentNight</item>
 	</style>
 	
-<!--
-	<style name="DarkTheme">
-		
-		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorAccent">@color/colorAccent</item>
-		<item name="android:textColor">@color/controlTextDarck</item>
-		<item name="android:background">@color/controlBackgroundDarck</item>
-	</style>
-	
-	<style name="LightTheme">
-	
-		<item name="colorPrimary">@color/colorPrimary</item>
-		<item name="colorPrimaryDark">@color/colorPrimaryDark</item>
-		<item name="colorAccent">@color/colorAccent</item>
-		<item name="android:textColor">@color/controlTextLicht</item>
-		<item name="android:background">@color/controlBackgroundLicht</item>
-	</style>
-	-->
-		
-		
-		
-		
-		
 	
 	
-	
-		
-
 	<style name="AppTheme.ToolbarColoreTheme" parent="AppTheme">
-		<item name="android:textColorSecondary">@color/colorAccent</item>
+		<item name="colorPrimary">@color/colorAccentNight</item>
+		<item name="colorPrimaryDark">@color/colorAccentNight</item>
+		<item name="android:textColorSecondary">@color/colorAccentNight</item>
 	</style>
 
 	<style name="AppTheme.NoActionBar">
@@ -115,7 +64,6 @@
 	<style name="AppTheme.FullScreenDialog" parent="AppTheme">
 		<item name="android:windowIsFloating">False</item>
 		<item name="android:windowSoftInputMode">adjustResize</item>
-		
 	</style>
 
 	<style name="AppTheme.Chip.Choice" parent="Widget.MaterialComponents.TextInputLayout.OutlinedBox">

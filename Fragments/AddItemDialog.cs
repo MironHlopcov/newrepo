@@ -239,7 +239,7 @@ namespace NavigationDrawerStarter.Fragments
             if (ParseStringToFloat.GetFloat(summOper.Text) == 0)
             {
                 wrap_texstInput_OperationTSumm.Error = "Сумма операции должна быть больше 0 и не может превышать " +
-                    "340 028 230 000 000 000 000 000 000 000 000 000 000";
+                    "340 млрд.";
                 isError = true;
             }
             else

@@ -223,6 +223,7 @@ namespace NavigationDrawerStarter.Fragments
             if (tag != "")
             {
                 var chip = (Chip)inflater.Inflate(Resource.Layout.chip_layot, null, false);
+                chip.CloseIconVisible = false;
                 chip.Checkable = true;
                 chip.Text = tag;
                 chip.SetOnCloseIconClickListener(this);

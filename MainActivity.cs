@@ -50,17 +50,17 @@ namespace NavigationDrawerStarter
         protected override async void OnCreate(Bundle savedInstanceState)
         {
 
-            //Configuration config = this.Resources.Configuration;
-            //var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
-            //if (ThemeMode) this.SetTheme(Resource.Style.DarkTheme);
-            //else this.SetTheme(Resource.Style.LightTheme); 
-
             Configuration config = this.Resources.Configuration;
             var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
-            if (ThemeMode)
-                AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightYes;
-            else
-                AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
+            if (ThemeMode) this.SetTheme(Resource.Style.DarkTheme);
+            else this.SetTheme(Resource.Style.LightTheme);
+
+            //Configuration config = this.Resources.Configuration;
+            //var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
+            //if (ThemeMode)
+            //    AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightYes;
+            //else
+            //    AppCompatDelegate.DefaultNightMode = AppCompatDelegate.ModeNightNo;
 
             savedInstanceState = null;
             base.OnCreate(savedInstanceState);
@@ -104,7 +104,7 @@ namespace NavigationDrawerStarter
                 tabLayout.TabGravity = 0;
 
                 pager = FindViewById<ViewPager2>(Resource.Id.pager);
-                pager.OffscreenPageLimit=2;
+                pager.OffscreenPageLimit=2;//позволяет адакватно реагировать на нажатие кнопок
 
                 tabLayout.TabSelected += (object sender, TabLayout.TabSelectedEventArgs e) =>
                 {
@@ -472,7 +472,6 @@ namespace NavigationDrawerStarter
             dialog.Display(SupportFragmentManager);
         }
 
-
         public bool OnNavigationItemSelected(IMenuItem item)
         {
             int id = item.ItemId;
@@ -493,6 +492,7 @@ namespace NavigationDrawerStarter
             if (id == Resource.Id.nav_db_clear)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
+              
                 builder.SetTitle("Очистка базы данных");
                 builder.SetMessage("Данное действие приведет к полной очистке базы данных приложения. " +
                     "Для сохранения возможности востановить данные воспользуйтесь функцией экспорат в файл. " +

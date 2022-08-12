@@ -34,10 +34,8 @@ namespace NavigationDrawerStarter
                 Index = index;
                 ListData = listData;
             }
-
             public override View OnCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState)
             {
-                #region 
                 var ViewAD = LayoutInflater.Inflate(Resource.Layout.tab_layout, container, false);
                 ListView listViewItems = ViewAD.FindViewById<ListView>(Resource.Id.dateslistView);
 
@@ -62,7 +60,6 @@ namespace NavigationDrawerStarter
                 TabLayout listView = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
                 listView.GetTabAt(Index).SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
                 return ViewAD;
-                #endregion
             }
 
             public void OnItemClickDeletAfter(AdapterView parent, View view, int position, long id)

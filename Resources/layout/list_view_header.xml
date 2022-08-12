@@ -32,6 +32,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:src="@drawable/group_indicator"
+        android:tint="@color/colorAccent"
         android:paddingTop="@dimen/material_clock_hand_center_dot_radius"
         android:paddingRight="23dp"
         android:layout_alignParentRight="true"
