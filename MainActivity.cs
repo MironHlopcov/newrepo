@@ -35,8 +35,8 @@ namespace NavigationDrawerStarter
     {
         DrawerLayout drawer;
         RightMenu _RightMenu;
-        RightMenuNew _RightMenuNew;
-        RightMenuT<DataItem> _RightMenuT;
+        //RightMenuNew _RightMenuNew;
+        //RightMenuT<DataItem> _RightMenuT;
 
         private static int[] tabIcons;
 
@@ -44,7 +44,7 @@ namespace NavigationDrawerStarter
         ViewPager2 pager;
         CustomViewPager2Adapter adapter;
 
-        private static List<BankConfiguration> smsFilters = new List<BankConfiguration>();
+        //private static List<BankConfiguration> smsFilters = new List<BankConfiguration>();
 
 
         protected override async void OnCreate(Bundle savedInstanceState)
@@ -104,7 +104,7 @@ namespace NavigationDrawerStarter
                 tabLayout.TabGravity = 0;
 
                 pager = FindViewById<ViewPager2>(Resource.Id.pager);
-                pager.OffscreenPageLimit=2;//позволяет адакватно реагировать на нажатие кнопок
+                pager.OffscreenPageLimit=3;//позволяет адакватно реагировать на нажатие кнопок
 
                 tabLayout.TabSelected += (object sender, TabLayout.TabSelectedEventArgs e) =>
                 {
@@ -137,7 +137,9 @@ namespace NavigationDrawerStarter
                 {
                     Resource.Mipmap.ic_cash50,
                     Resource.Mipmap.ic_in_deposit50,
-                    Resource.Mipmap.ic_cashOut51
+                    Resource.Mipmap.ic_cashOut51,
+                    Resource.Mipmap.ic_error,
+
                 };
                 pager.Adapter = adapter;
 

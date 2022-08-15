@@ -30,7 +30,6 @@ namespace NavigationDrawerStarter.Parsers
         }
         private void ToDataItems()
         {
-            // List<string> words = new List<string>();
             foreach (Sms sms in smslist)
             {
                 var ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
@@ -38,39 +37,36 @@ namespace NavigationDrawerStarter.Parsers
 
                 var msg = sms.getMsg();
 
-                //Regex wordsRegex = new Regex(BankConfigurations.Where(x=>x.SmsNumber==sms.getAddress()).First().SmsParseRegex);
                 var BelarusbankSmsRegex = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().SmsParseRegex;
-                //var smsWords = wordsRegex.Matches(msg);
-
+              
                 OperacionTyps operType;
-                //var testRegex = new Regex(@"^[A-Z]{1,}");
-                //var testVal = testRegex.Match(msg); 
-                if (Enum.TryParse<OperacionTyps>(new Regex(BelarusbankSmsRegex.OperacionTyp).Match(msg).Value.ToString(), out operType))
+              
+                var parselableOperTyp = new Regex(BelarusbankSmsRegex.OperacionTyp).Match(msg).Value.ToString();
+                var operTyptempls = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First();
+                if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().PaymentTemplates.Contains(parselableOperTyp))
+                    operType = OperacionTyps.OPLATA;
+                else if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().DepositTemplates.Contains(parselableOperTyp))
+                    operType = OperacionTyps.ZACHISLENIE;
+                else if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().СashTemplates.Contains(parselableOperTyp))
+                    operType = OperacionTyps.NALICHNYE;
+                else 
+                    operType = OperacionTyps.UNREACHABLE;
+
+                string date = new Regex(BelarusbankSmsRegex.Date).Match(msg).Value;
+                if (date != "")
                 {
-
-                    string date = new Regex(BelarusbankSmsRegex.Date).Match(msg).Value;
-
-                    if (date != "")
-                    {
-                        DateTime dateValue = DateTime.Parse(date);
-                        DataItem dataItem = new DataItem(operType, (DateTime)dateValue);
-
-                        dataItem.Sum = float.TryParse(new Regex(BelarusbankSmsRegex.Sum).Match(msg).Value, NumberStyles.Any, ci, out float tempSum) ? tempSum : default;
-                        dataItem.Balance = float.TryParse(new Regex(BelarusbankSmsRegex.Balance).Match(msg).Value, NumberStyles.Any, ci, out float tempBalance) ? tempBalance : default;
-                        dataItem.Karta = int.TryParse(new Regex(BelarusbankSmsRegex.Karta).Match(msg).Value, NumberStyles.Any, ci, out int tempKarta) ? tempKarta : default;
-                        dataItem.MCC = int.TryParse(new Regex(BelarusbankSmsRegex.Mcc).Match(msg).Value, NumberStyles.Any, ci, out int tempMcc) ? tempMcc : default;
-                        dataItem.Descripton = new Regex(BelarusbankSmsRegex.Descripton).Match(msg).Value.Trim(' ').ToUpper();
-                        Data.Add(dataItem);
-                    }
+                    DateTime dateValue = DateTime.Parse(date);
+                    DataItem dataItem = new DataItem(operType, (DateTime)dateValue);
+                    dataItem.Sum = float.TryParse(new Regex(BelarusbankSmsRegex.Sum).Match(msg).Value, NumberStyles.Any, ci, out float tempSum) ? tempSum : default;
+                    dataItem.Balance = float.TryParse(new Regex(BelarusbankSmsRegex.Balance).Match(msg).Value, NumberStyles.Any, ci, out float tempBalance) ? tempBalance : default;
+                    dataItem.Karta = int.TryParse(new Regex(BelarusbankSmsRegex.Karta).Match(msg).Value, NumberStyles.Any, ci, out int tempKarta) ? tempKarta : default;
+                    dataItem.MCC = int.TryParse(new Regex(BelarusbankSmsRegex.Mcc).Match(msg).Value, NumberStyles.Any, ci, out int tempMcc) ? tempMcc : default;
+                    dataItem.Descripton = new Regex(BelarusbankSmsRegex.Descripton).Match(msg).Value.Trim(' ').ToUpper();
+                    Data.Add(dataItem);
                 }
             }
         }
 
-
-        //int CollomnCount = 11;
-        //string FirstColmnName ;
-
-        //IReadOnlyList<Cell> tableHider = new List<Cell>();
         string _pdfRepportPatch;
         public Parser(string pdfRepportPatch, List<BankConfiguration> bankConfigurations)
         {
@@ -79,7 +75,6 @@ namespace NavigationDrawerStarter.Parsers
             _pdfRepportPatch = pdfRepportPatch;
             //BankConfiguration bankConfiguration = _bankConfigurations[0];
         }
-
         async Task ParseStart(string pdfRepportPatch)
         {
             string firstColmnName = BankConfigurations[0].PdfReportTemplate.FirstColumnName;
@@ -89,7 +84,6 @@ namespace NavigationDrawerStarter.Parsers
 
             await Task.Run(() =>
             {
-
                 using (PdfDocument document = PdfDocument.Open(pdfRepportPatch, new ParsingOptions() { ClipPaths = true }))
                 {
                     ObjectExtractor oe = new ObjectExtractor(document);
@@ -117,7 +111,6 @@ namespace NavigationDrawerStarter.Parsers
         }
         void PdfToDataItem(List<string[]> resalt)
         {
-
             foreach (var str in resalt)
             {
                 var bc = BankConfigurations[0].PdfReportTemplate;
@@ -139,7 +132,6 @@ namespace NavigationDrawerStarter.Parsers
 
                 DataItem dataItem = new DataItem(operType, (DateTime)dateValue);
 
-
                 dataItem.Sum = float.TryParse(str[bc.NomrColumnOfSum], NumberStyles.Any, ci, out float tempSum) ? tempSum : default;
                 dataItem.Balance = float.TryParse(str[bc.NomrColumnOfBalance], NumberStyles.Any, ci, out float tempBalance) ? tempBalance : default;
                 dataItem.Karta = int.TryParse(str[bc.NomrColumnOfKarta].Split(" ").Last(), NumberStyles.Any, ci, out int tempKarta) ? tempKarta : default;
@@ -150,7 +142,6 @@ namespace NavigationDrawerStarter.Parsers
                 Data.Add(dataItem);
             }
         }
-
         public async Task<List<DataItem>> GetDataFromPdf()
         {
             await ParseStart(_pdfRepportPatch);

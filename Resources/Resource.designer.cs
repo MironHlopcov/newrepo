@@ -10334,8 +10334,8 @@ namespace NavigationDrawerStarter
 		public partial class Mipmap
 		{
 			
-			// aapt resource value: 0x7F0D000A
-			public const int icons8_cash_out_64 = 2131558410;
+			// aapt resource value: 0x7F0D000B
+			public const int icons8_cash_out_64 = 2131558411;
 			
 			// aapt resource value: 0x7F0D0000
 			public const int ic_cash50 = 2131558400;
@@ -10350,22 +10350,25 @@ namespace NavigationDrawerStarter
 			public const int ic_cash_out = 2131558401;
 			
 			// aapt resource value: 0x7F0D0004
-			public const int ic_in_deposit = 2131558404;
+			public const int ic_error = 2131558404;
 			
 			// aapt resource value: 0x7F0D0005
-			public const int ic_in_deposit50 = 2131558405;
+			public const int ic_in_deposit = 2131558405;
 			
 			// aapt resource value: 0x7F0D0006
-			public const int ic_launcher = 2131558406;
+			public const int ic_in_deposit50 = 2131558406;
 			
 			// aapt resource value: 0x7F0D0007
-			public const int ic_launcher_foreground = 2131558407;
+			public const int ic_launcher = 2131558407;
 			
 			// aapt resource value: 0x7F0D0008
-			public const int ic_launcher_round = 2131558408;
+			public const int ic_launcher_foreground = 2131558408;
 			
 			// aapt resource value: 0x7F0D0009
-			public const int ic_payments50 = 2131558409;
+			public const int ic_launcher_round = 2131558409;
+			
+			// aapt resource value: 0x7F0D000A
+			public const int ic_payments50 = 2131558410;
 			
 			static Mipmap()
 			{

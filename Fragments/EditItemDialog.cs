@@ -11,6 +11,7 @@ using AndroidX.Fragment.App;
 using EfcToXamarinAndroid.Core;
 using Google.Android.Material.Chip;
 using Google.Android.Material.TextField;
+using NavigationDrawerStarter.Configs.ManagerCore;
 using NavigationDrawerStarter.Models;
 using NavigationDrawerStarter.Parsers;
 using System;
@@ -263,7 +264,7 @@ namespace NavigationDrawerStarter.Fragments
             DateTime itDateTime = DateTime.Parse(date_text_edit1.Text + " " + date_text_edit2.Text);
             while (DatesRepositorio.DataItems.Any(x => x.Date == itDateTime))
                 itDateTime = itDateTime.Second == 59 ?
-                    itDateTime.Date.AddSeconds(-itDateTime.Second) :
+                    itDateTime.Date.AddSeconds(-59) :
                     itDateTime.Date.AddSeconds(1);
 
             #region DateCheck
@@ -319,9 +320,16 @@ namespace NavigationDrawerStarter.Fragments
                 return false;
             return true;
         }
+        private void BankConfigEdit()
+        {
+            #region ConfigManager
+            ConfigurationManager configManager = ConfigurationManager.ConfigManager;
+            var configuration = configManager.BankConfigurationFromJson;
+            #endregion
+
+        }
         private void Toolbar_MenuItemClick(object sender, Toolbar.MenuItemClickEventArgs e)
         {
-
             if (!IsInputCorrect())
                 return;
 
@@ -419,8 +427,6 @@ namespace NavigationDrawerStarter.Fragments
             base.OnDismiss(dialog);
             dialog.Dismiss();
             // RequireActivity().OnBackPressed();
-
-
         }
 
         public delegate void EventHandler(object sender, EventArgs e);
@@ -432,7 +438,4 @@ namespace NavigationDrawerStarter.Fragments
             handler?.Invoke(this, e);
         }
     }
-
-
-
 }

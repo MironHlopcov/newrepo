@@ -20,6 +20,7 @@ namespace NavigationDrawerStarter
         public static List<DataItem> Payments = new List<DataItem>();
         public static List<DataItem> Deposits = new List<DataItem>();
         public static List<DataItem> Cashs = new List<DataItem>();
+        public static List<DataItem> Unreachable = new List<DataItem>();
 
         private static readonly string dbFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
         private static readonly string fileName = "Cats.db";
@@ -158,6 +159,9 @@ namespace NavigationDrawerStarter
 
             Cashs.Clear();
             Cashs.AddRange(GetCashs(ordetDataItems));
+
+            Unreachable.Clear();
+            Unreachable.AddRange(GetUnreachable(ordetDataItems));
         }
         public static async Task UpdateItemValue(int id, DataItem newValue)
         {
@@ -211,6 +215,10 @@ namespace NavigationDrawerStarter
         public static List<DataItem> GetCashs(List<DataItem> dataItems)
         {
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.NALICHNYE).ToList();
+        }
+        public static List<DataItem> GetUnreachable(List<DataItem> dataItems)
+        {
+            return dataItems.Where(x => x.OperacionTyp == OperacionTyps.UNREACHABLE).ToList();
         }
 
         public static MFilter MFilter

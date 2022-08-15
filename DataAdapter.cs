@@ -37,6 +37,9 @@ namespace NavigationDrawerStarter
                 case 2:
                     this.dataItems = DatesRepositorio.Cashs;
                     break;
+                case 3:
+                    this.dataItems = DatesRepositorio.Unreachable;
+                    break;
             }
         }
 

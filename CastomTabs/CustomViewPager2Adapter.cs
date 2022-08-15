@@ -17,7 +17,7 @@ namespace NavigationDrawerStarter
                 _fragmentManager = fragmentManager;
 
             }
-            public override int ItemCount => 3;
+            public override int ItemCount => 4;
             private AndroidX.Fragment.App.Fragment fragment = new AndroidX.Fragment.App.Fragment();
 
 
@@ -33,6 +33,9 @@ namespace NavigationDrawerStarter
                         break;
                     case 2:
                         fragment = new ViewPage2Fragment(position, DatesRepositorio.Cashs);
+                        break;
+                    case 3:
+                        fragment = new ViewPage2Fragment(position, DatesRepositorio.Unreachable);
                         break;
                 }
                 return fragment;

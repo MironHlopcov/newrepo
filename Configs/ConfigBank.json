@@ -1,8 +1,12 @@
 ﻿{
-  "Banks": [
+  "Banks": 
+  [
     {
       "Name": "Belarusbank",
       "SmsNumber": "ASB.BY",
+      "PaymentTemplates": [ "OPLATA" ],
+      "DepositTemplates": [ "ZACHISLENIE" ],
+      "СashTemplates": [ "NALICHNYE" ],
       "SmsParseRegex": {
         "OperacionTyp": "^[A-Z]{1,}",
         "Sum": "(([0-9]{1,}.[0-9]{1,})(?= BYN | RUB ))",
@@ -30,6 +34,9 @@
     {
       "Name": "Belarusbank",
       "SmsNumber": "Mbank",
+      "PaymentTemplates": [ "OPLATA" ],
+      "DepositTemplates": [ "ZACHISLENIE" ],
+      "СashTemplates": [ "NALICHNYE" ],
       "SmsParseRegex": {
         "OperacionTyp": "^[A-Z]{1,}",
         "Sum": "(([0-9]{1,}.[0-9]{1,})(?= BYN | RUB ))",
@@ -55,8 +62,11 @@
       }
     },
     {
-      "Name": "Belvebbank",
+      "Name": "2222222",
       "SmsNumber": "1111111111111111",
+      "PaymentTemplates": [ "OPLATA", "OPLATE" ],
+      "DepositTemplates": [ "ZACHISLENIE" ],
+      "СashTemplates": [ "NALICHNYE" ],
       "SmsParseRegex": {
         "OperacionTyp": "^[A-Z]{1,}",
         "Sum": "(([0-9]{1,}.[0-9]{1,})(?= BYN | RUB ))",
@@ -78,13 +88,7 @@
         "NomrColumnOfBalance": "9"
       }
     }
-
   ]
-  
-  
-
-
-
 }
 
                                                  
