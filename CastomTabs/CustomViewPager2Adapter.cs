@@ -49,7 +49,7 @@ namespace NavigationDrawerStarter
                     var ft = _fragmentManager.Fragments[i];
                     if (!ft.Tag.Contains("MENU")&& !ft.Tag.Contains("AddItemDialog"))
                     {
-                        ((ViewPage2Fragment)ft).DataAdapter.NotifyDataSetChanged();
+//////                        ((ViewPage2Fragment)ft).DataAdapter.NotifyDataSetChanged();
                     }
                 }
             }

@@ -118,7 +118,7 @@ namespace NavigationDrawerStarter
                 var dialog = new SelectItemDialog(ListData[position]);
                 dialog.EditItemChange += (sender, e) =>
                 {
-                    DataAdapter.NotifyDataSetChanged();
+//////                    DataAdapter.NotifyDataSetChanged();
                     dialog.Dismiss();
                 };
                 dialog.Display(Activity.SupportFragmentManager);
@@ -134,7 +134,7 @@ namespace NavigationDrawerStarter
                     var dialog = new EditItemDialog(ListData[position]);
                     dialog.EditItemChange += (sender, e) =>
                     {
-                        DataAdapter.NotifyDataSetChanged();
+ ////////                       DataAdapter.NotifyDataSetChanged();
                         dialog.Dismiss();
                     };
                     dialog.Display(Activity.SupportFragmentManager);
@@ -143,7 +143,7 @@ namespace NavigationDrawerStarter
                 builder.SetNegativeButton("Удалить", (c, ev) =>
                 {
                     DatesRepositorio.DeleteItem(ListData[position]);
-                    DataAdapter.NotifyDataSetChanged();
+ ///////                   DataAdapter.NotifyDataSetChanged();
                 });
                 builder.SetNeutralButton("Отмена", (c, ev) =>
                 {

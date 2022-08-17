@@ -241,6 +241,14 @@ namespace NavigationDrawerStarter
                         badge.Number = newItemsCount;
                         badge.BadgeGravity = BadgeDrawable.TopStart;
                         break;
+                    case 3:
+                        newItemsCount = DatesRepositorio.GetUnreachable(DatesRepositorio.NewDataItems).Count;
+                        if (newItemsCount < 1)
+                            break;
+                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
+                        badge.Number = newItemsCount;
+                        badge.BadgeGravity = BadgeDrawable.TopStart;
+                        break;
                 }
             }
             adapter.UpdateFragments();
@@ -299,10 +307,7 @@ namespace NavigationDrawerStarter
                 // The user canceled or something went wrong
                 return isOk;
             }
-
-          
         }
-
 
         #region Stock
         public override void OnBackPressed()
@@ -515,7 +520,6 @@ namespace NavigationDrawerStarter
                 builder.Create();
                 builder.Show();
                 return true;
-
             }
 
             if (id == Resource.Id.nav_upload)
@@ -531,112 +535,7 @@ namespace NavigationDrawerStarter
                 string localPath = Path.Combine(documentsPath, localFilename);
 
                 serializer.SaveToFile(localPath);
-                //serializer.DeserializeFile(localPath);
-
-
-
-
-                //if (_RightMenuNew == null)
-                //{
-                //    _RightMenuNew = new RightMenuNew();
-
-                //    var filterFragmentTransaction = SupportFragmentManager.BeginTransaction();
-                //    filterFragmentTransaction.Add(Resource.Id.MenuFragmentFrame, _RightMenuNew, "MENU");
-                //    filterFragmentTransaction.Commit();
-                //    _RightMenuNew.FiltredList = DatesRepositorio.DataItems.Select(x => x.Descripton).Distinct().ToList<string>();
-
-                //    _RightMenuNew.AddChekFilterItem("Карта", DatesRepositorio.DataItems.Select(x => x.Karta.ToString()).Distinct().ToList());
-                //    //_RightMenu.AddChekFilterItem("Категория по умолчанию", DatesRepositorio.DataItems.Select(x => x.DefaultCategoryTyps.ToString()).Distinct().ToList());
-                //    //_RightMenu.AddChekFilterItem("Пользовательская категория", DatesRepositorio.DataItems.Select(x => x.CastomCategoryTyps.ToString()).Distinct().ToList());
-
-                //    _RightMenuNew.AddChekFilterItem("MCC код", DatesRepositorio.DataItems.Select(x => x.MCC.ToString()).Distinct().ToList());
-                //    _RightMenuNew.AddChekFilterItem("MCC описание", DatesRepositorio.DataItems.Select(x => x.MccDeskription?.ToString()).Distinct().ToList());
-
-
-                //    drawer.OpenDrawer(GravityCompat.End);
-
-                //    _RightMenuNew.SetFilters += (object sender, EventArgs e) =>
-                //    {
-
-                //        var filter = ((RightMenuNew)sender).FilredResultList;
-
-                //        #region Test
-                //        //var filterExtension = DatesRepositorio.DataItems.Where(x => filter.SearchDiscriptions == "" ? true : x.Descripton == filter.SearchDiscriptions)
-                //        //                                                .Where(x => filter.SearchDatas[0] == default ?
-                //        //                                                x.Date.Date > DateTime.MinValue : (
-                //        //                                                filter.SearchDatas[1] == default ?
-                //        //                                                x.Date.Date == filter.SearchDatas[0] :
-                //        //                                                x.Date.Date > filter.SearchDatas[0] &&
-                //        //                                                x.Date.Date < filter.SearchDatas[1])).ToArray();
-
-
-                //        //var fval = filter.ExpandableListAdapter.childList;
-                //        //foreach (var item in fval)
-                //        //{
-                //        //    if (item.Value.Count == 0)
-                //        //        continue;
-
-                //        //    switch (item.Key.Name)
-                //        //    {
-                //        //        case "Карта":
-                //        //            filterExtension = filterExtension.Where(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.Karta.ToString())).ToArray();
-                //        //            break;
-                //        //        case "Категория по умолчанию":
-                //        //            filterExtension = filterExtension.Where(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.DefaultCategoryTyps.ToString())).ToArray();
-                //        //            break;
-                //        //        case "Пользовательская категория":
-                //        //            filterExtension = filterExtension.Where(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.CastomCategoryTyps.ToString())).ToArray();
-                //        //            break;
-
-
-                //        //    }
-
-
-                //        //}
-                //        #endregion
-
-                //        var fltr = DatesRepositorio.MFilter;
-                //        fltr.GetResult(x => filter.SearchDiscriptions == "" ? true : x.Descripton == filter.SearchDiscriptions);
-                //        fltr.GetResult(x => filter.SearchDatas[0] == default ?
-                //                                                        x.Date.Date > DateTime.MinValue : (
-                //                                                        filter.SearchDatas[1] == default ?
-                //                                                        x.Date.Date == filter.SearchDatas[0] :
-                //                                                        x.Date.Date > filter.SearchDatas[0] &&
-                //                                                        x.Date.Date < filter.SearchDatas[1]));
-                //        var chLi = filter.ExpandableListAdapter.childList;
-                //        foreach (var item in chLi)
-                //        {
-                //            if (!item.Key.IsCheked)
-                //                continue;
-
-                //            switch (item.Key.Name)
-                //            {
-                //                case "Карта":
-                //                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.Karta.ToString())).ToArray();
-                //                    break;
-                //                case "Категория по умолчанию":
-                //                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.DefaultCategoryTyps.ToString())).ToArray();
-                //                    break;
-                //                case "Пользовательская категория":
-                //                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.CastomCategoryTyps.ToString())).ToArray();
-                //                    break;
-                //                case "MCC код":
-                //                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.MCC.ToString())).ToArray();
-                //                    break;
-                //                case "MCC описание":
-                //                    fltr.GetResult(q => item.Value.Where(r => r.IsCheked).Select(w => w.Name).Contains(q.MccDeskription)).ToArray();
-                //                    break;
-                //            }
-                //        }
-                //        drawer.CloseDrawer(GravityCompat.End);
-                //        adapter.UpdateFragments();
-                //    };
-                //    return true;
-                //}
-                //else
-                //{
-                //    drawer.OpenDrawer(GravityCompat.End);
-                //}
+               
             }
             if (id == Resource.Id.nav_restore)
             {

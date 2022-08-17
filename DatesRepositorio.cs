@@ -4,6 +4,7 @@ using NavigationDrawerStarter.Configs.ManagerCore;
 using NavigationDrawerStarter.Filters;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -22,9 +23,19 @@ namespace NavigationDrawerStarter
         public static List<DataItem> Cashs = new List<DataItem>();
         public static List<DataItem> Unreachable = new List<DataItem>();
 
+        //public static ObservableCollection<DataItem> Payments = new ObservableCollection<DataItem>();
+        //public static ObservableCollection<DataItem> Deposits = new ObservableCollection<DataItem>();
+        //public static ObservableCollection<DataItem> Cashs = new ObservableCollection<DataItem>();
+        //public static ObservableCollection<DataItem> Unreachable = new ObservableCollection<DataItem>();
+
         private static readonly string dbFolder = System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal);
         private static readonly string fileName = "Cats.db";
         private static readonly string dbFullPath = Path.Combine(dbFolder, fileName);
+
+        public static event EventHandler PaymentsChange;
+        public static event EventHandler DepositsChange;
+        public static event EventHandler CashsChange;
+        public static event EventHandler UnreachableChange;
 
         public static async Task SetDatasFromDB()
         {
@@ -193,6 +204,9 @@ namespace NavigationDrawerStarter
                         await db.SaveChangesAsync();
                     }
                 }
+
+                UpdateAutLists(DataItems);
+
             }
             catch (Exception ex)
             {
@@ -206,18 +220,22 @@ namespace NavigationDrawerStarter
             var codes = mccManager.MccConfigurationFromJson;
             var sdf = dataItems.Where(x => x.OperacionTyp == OperacionTyps.OPLATA).Select(x => x.MccDeskription = codes.Keys.Contains(x.MCC) ? codes[x.MCC] : null).ToList();
             ////return dataItems.Where(x => x.OperacionTyp == OperacionTyps.OPLATA).ToList();
+            PaymentsChange?.Invoke(Payments, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.OPLATA).ToList();
         }
         public static List<DataItem> GetDeposits(List<DataItem> dataItems)
         {
+            DepositsChange?.Invoke(Deposits, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.ZACHISLENIE).ToList();
         }
         public static List<DataItem> GetCashs(List<DataItem> dataItems)
         {
+            CashsChange?.Invoke(Cashs, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.NALICHNYE).ToList();
         }
         public static List<DataItem> GetUnreachable(List<DataItem> dataItems)
         {
+            UnreachableChange?.Invoke(Unreachable, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.UNREACHABLE).ToList();
         }
 
@@ -234,7 +252,6 @@ namespace NavigationDrawerStarter
         {
             UpdateAutLists(((MFilter)sender).OutDataItems);
         }
-
 
     }
 }

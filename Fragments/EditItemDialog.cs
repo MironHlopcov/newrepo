@@ -88,7 +88,7 @@ namespace NavigationDrawerStarter.Fragments
 
             #region OperTyp
             wrap_aut_comp_tv_OperationTyp = view.FindViewById<TextInputLayout>(Resource.Id.wrap_aut_comp_tv_OperationTyp);
-            var operTypList = typeof(OperacionTyps).GetEnumNames();
+            var operTypList = typeof(OperacionTyps).GetEnumNames().SkipLast(1).ToArray() ;
             var operTypAdapter = new Android.Widget.ArrayAdapter<string>(this.Context, (int)Resource.Layout.dropdown_item, operTypList);
             autocompleteTVOperTyp = view.FindViewById<Android.Widget.AutoCompleteTextView>(Resource.Id.aut_comp_tv_OperationTyp);
             autocompleteTVOperTyp.Text = selectedItem.OperacionTyp.ToString();
@@ -403,9 +403,7 @@ namespace NavigationDrawerStarter.Fragments
             }
 
             DatesRepositorio.UpdateItemValue(selectedItem.Id, item);
-            OnEditItemChange(this, e);
-
-
+         OnEditItemChange(this, e);
 
         }
 
