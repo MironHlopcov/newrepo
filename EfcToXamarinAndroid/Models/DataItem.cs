@@ -19,6 +19,7 @@ namespace EfcToXamarinAndroid.Core
         public string? Title { get; set; }
         public string? Descripton { get; set; }
         public int MCC { get; set; }
+        public string? MccDeskription { get; set; }
         public DateTime Date { get; set; }
         public bool IsParent { get; private set; }
         public int ParentId { get; set; }
@@ -28,7 +29,9 @@ namespace EfcToXamarinAndroid.Core
         public CategoryTyps CastomCategoryTyps { get; private set; }
         [XmlIgnore]
         public List<SybCategory>? SubCategorys { get; private set; }
-        public string? MccDeskription { get; set; }
+        public string? UnreachableText { get; private set; }
+        public string? UnreachableOperacionTyp { get; set; }
+        public string? SmsAdress { get;  set; }
 
 
 

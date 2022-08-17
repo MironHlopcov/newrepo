@@ -49,9 +49,9 @@ namespace NavigationDrawerStarter.Parsers
                     operType = OperacionTyps.ZACHISLENIE;
                 else if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().СashTemplates.Contains(parselableOperTyp))
                     operType = OperacionTyps.NALICHNYE;
-                else 
+                else
                     operType = OperacionTyps.UNREACHABLE;
-
+                  
                 string date = new Regex(BelarusbankSmsRegex.Date).Match(msg).Value;
                 if (date != "")
                 {
@@ -62,6 +62,9 @@ namespace NavigationDrawerStarter.Parsers
                     dataItem.Karta = int.TryParse(new Regex(BelarusbankSmsRegex.Karta).Match(msg).Value, NumberStyles.Any, ci, out int tempKarta) ? tempKarta : default;
                     dataItem.MCC = int.TryParse(new Regex(BelarusbankSmsRegex.Mcc).Match(msg).Value, NumberStyles.Any, ci, out int tempMcc) ? tempMcc : default;
                     dataItem.Descripton = new Regex(BelarusbankSmsRegex.Descripton).Match(msg).Value.Trim(' ').ToUpper();
+                    dataItem.SmsAdress = sms.getAddress();
+                    if (operType == OperacionTyps.UNREACHABLE)
+                        dataItem.UnreachableOperacionTyp = parselableOperTyp;
                     Data.Add(dataItem);
                 }
             }

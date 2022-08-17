@@ -320,12 +320,52 @@ namespace NavigationDrawerStarter.Fragments
                 return false;
             return true;
         }
-        private void BankConfigEdit()
+        private void ChengBankConfig(DataItem item, DataItem newValue)
         {
-            #region ConfigManager
-            ConfigurationManager configManager = ConfigurationManager.ConfigManager;
-            var configuration = configManager.BankConfigurationFromJson;
-            #endregion
+            AlertDialog.Builder builder = new AlertDialog.Builder(this.Context);
+
+            builder.SetTitle("Изменить значение поумолчанию");
+            builder.SetMessage($"Тип данной операции определен как {item.UnreachableOperacionTyp} и не поддерживается приложением. " +
+                $"Ассоциировать данный тип с известной категорией {newValue.OperacionTyp}? ");
+
+            builder.SetCancelable(false);
+            builder.SetPositiveButton("Да", async (c, ev) =>
+            {
+                #region ConfigManager
+                ConfigurationManager configManager = ConfigurationManager.ConfigManager;
+                var configuration = configManager.BankConfigurationFromJson;
+                #endregion
+                var bank = configuration.Banks.Where(x => x.SmsNumber == item.SmsAdress).First();
+                List<string> temp = new List<string>();
+                switch (newValue.OperacionTyp)
+                {
+                    case OperacionTyps.OPLATA:
+                        temp = bank.PaymentTemplates.ToList();
+                        temp.Add(item.UnreachableOperacionTyp);
+                        bank.PaymentTemplates = temp.ToArray();
+                        break;
+                    case OperacionTyps.ZACHISLENIE:
+                        temp = bank.PaymentTemplates.ToList();
+                        temp.Add(item.UnreachableOperacionTyp);
+                        bank.DepositTemplates = temp.ToArray();
+                        break;
+                    case OperacionTyps.NALICHNYE:
+                        temp = bank.PaymentTemplates.ToList();
+                        temp.Add(item.UnreachableOperacionTyp);
+                        bank.СashTemplates = temp.ToArray();
+                        break;
+                    default:
+                        break;
+                }
+                configManager.Save();
+            });
+
+            builder.SetNegativeButton("Отмена", (c, ev) =>
+            {
+                return;
+            });
+            builder.Create();
+            builder.Show();
 
         }
         private void Toolbar_MenuItemClick(object sender, Toolbar.MenuItemClickEventArgs e)
@@ -356,8 +396,17 @@ namespace NavigationDrawerStarter.Fragments
                 Dismiss();
                 return;
             }
+
+            if (selectedItem.OperacionTyp == OperacionTyps.UNREACHABLE && item.OperacionTyp != selectedItem.OperacionTyp)
+            {
+                ChengBankConfig(selectedItem, item);
+            }
+
             DatesRepositorio.UpdateItemValue(selectedItem.Id, item);
             OnEditItemChange(this, e);
+
+
+
         }
 
         private void Toolbar_NavigationClick(object sender, Toolbar.NavigationClickEventArgs e)

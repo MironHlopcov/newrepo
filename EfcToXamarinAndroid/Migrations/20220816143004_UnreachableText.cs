@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace EfcToXamarinAndroid.MigrationsHelper.Migrations
 {
-    public partial class migration_name : Migration
+    public partial class UnreachableText : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -22,12 +22,15 @@ namespace EfcToXamarinAndroid.MigrationsHelper.Migrations
                     Title = table.Column<string>(nullable: true),
                     Descripton = table.Column<string>(nullable: true),
                     MCC = table.Column<int>(nullable: false),
+                    MccDeskription = table.Column<string>(nullable: true),
                     Date = table.Column<DateTime>(nullable: false),
                     IsParent = table.Column<bool>(nullable: false),
                     ParentId = table.Column<int>(nullable: false),
                     DefaultCategoryTyps = table.Column<int>(nullable: false),
                     CastomCategoryTyps = table.Column<int>(nullable: false),
-                    MccDeskription = table.Column<string>(nullable: true)
+                    UnreachableText = table.Column<string>(nullable: true),
+                    UnreachableOperacionTyp = table.Column<string>(nullable: true),
+                    SmsAdress = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

@@ -11,7 +11,7 @@ namespace EfcToXamarinAndroid.Core
         public DataItemContext(string databasePath)
         {
             //Database.EnsureDeleted();   // удаляем бд со старой схемой
-            //Database.EnsureCreated();   // создаем бд с новой схемой
+           // Database.EnsureCreated();   // создаем бд с новой схемой
             DatabasePath = databasePath;
         }
 

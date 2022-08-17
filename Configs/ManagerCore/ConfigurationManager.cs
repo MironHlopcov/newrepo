@@ -84,9 +84,9 @@ namespace NavigationDrawerStarter.Configs.ManagerCore
                 serializer.Serialize(writer, appConfiguration);
             }
         }
-        public void EditValue(string str)
+        public void Save()
         {
-            
+            Write(BankConfigurationFromJson);
         }
     }
 }
