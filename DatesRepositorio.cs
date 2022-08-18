@@ -120,8 +120,8 @@ namespace NavigationDrawerStarter
         }
         private static List<DataItem> GetNewDatas(List<DataItem> dataItems)
         {
-            var stopWatch = new Stopwatch();
-            stopWatch.Start();
+            //var stopWatch = new Stopwatch();
+            //stopWatch.Start();
 
             var newDataItems = new List<DataItem>();
 
@@ -155,24 +155,43 @@ namespace NavigationDrawerStarter
             }
             else
                 newDataItems = dataItems;
-            stopWatch.Stop();
-            Console.WriteLine(stopWatch.Elapsed);
+            //stopWatch.Stop();
+            //Console.WriteLine(stopWatch.Elapsed);
             return newDataItems;
         }
         private static void UpdateAutLists(List<DataItem> dataItems)
         {
+            var stopWatch = new Stopwatch();
+            stopWatch.Start();
+
             List<DataItem> ordetDataItems = dataItems.OrderBy(x => x.Date).Reverse().ToList();
-            Payments.Clear();
-            Payments.AddRange(GetPayments(ordetDataItems));
+            if (!GetPayments(ordetDataItems).Equals(Payments))
+            {
+                Payments.Clear();
+                Payments.AddRange(GetPayments(ordetDataItems));
+                PaymentsChange?.Invoke(Payments, EventArgs.Empty);
+            }
+            if (!GetDeposits(ordetDataItems).Equals(Deposits))
+            {
+                Deposits.Clear();
+                Deposits.AddRange(GetDeposits(ordetDataItems));
+                DepositsChange?.Invoke(Deposits, EventArgs.Empty);
+            }
+            if (!GetCashs(ordetDataItems).Equals(Cashs))
+            {
+                Cashs.Clear();
+                Cashs.AddRange(GetCashs(ordetDataItems));
+                CashsChange?.Invoke(Cashs, EventArgs.Empty);
+            }
+            if (!GetUnreachable(ordetDataItems).Equals(Unreachable))
+            {
+                Unreachable.Clear();
+                Unreachable.AddRange(GetUnreachable(ordetDataItems));
+                UnreachableChange?.Invoke(Unreachable, EventArgs.Empty);
+            }
 
-            Deposits.Clear();
-            Deposits.AddRange(GetDeposits(ordetDataItems));
-
-            Cashs.Clear();
-            Cashs.AddRange(GetCashs(ordetDataItems));
-
-            Unreachable.Clear();
-            Unreachable.AddRange(GetUnreachable(ordetDataItems));
+            stopWatch.Stop();
+            Console.WriteLine(stopWatch.Elapsed);
         }
         public static async Task UpdateItemValue(int id, DataItem newValue)
         {
@@ -204,9 +223,7 @@ namespace NavigationDrawerStarter
                         await db.SaveChangesAsync();
                     }
                 }
-
                 UpdateAutLists(DataItems);
-
             }
             catch (Exception ex)
             {
@@ -220,22 +237,18 @@ namespace NavigationDrawerStarter
             var codes = mccManager.MccConfigurationFromJson;
             var sdf = dataItems.Where(x => x.OperacionTyp == OperacionTyps.OPLATA).Select(x => x.MccDeskription = codes.Keys.Contains(x.MCC) ? codes[x.MCC] : null).ToList();
             ////return dataItems.Where(x => x.OperacionTyp == OperacionTyps.OPLATA).ToList();
-            PaymentsChange?.Invoke(Payments, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.OPLATA).ToList();
         }
         public static List<DataItem> GetDeposits(List<DataItem> dataItems)
         {
-            DepositsChange?.Invoke(Deposits, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.ZACHISLENIE).ToList();
         }
         public static List<DataItem> GetCashs(List<DataItem> dataItems)
         {
-            CashsChange?.Invoke(Cashs, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.NALICHNYE).ToList();
         }
         public static List<DataItem> GetUnreachable(List<DataItem> dataItems)
         {
-            UnreachableChange?.Invoke(Unreachable, EventArgs.Empty);
             return dataItems.Where(x => x.OperacionTyp == OperacionTyps.UNREACHABLE).ToList();
         }
 

@@ -50,10 +50,8 @@ namespace NavigationDrawerStarter
                 {
                     TabLayout listView = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
                     var tab = listView.GetTabAt(Index);
-
                     int oldCount = 0;
                     int.TryParse(tab.Text.Split(":")[0], out oldCount);
-
                     tab.SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
                 };
 

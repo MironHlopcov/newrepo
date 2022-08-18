@@ -102,6 +102,8 @@ namespace NavigationDrawerStarter
                 tabLayout = FindViewById<TabLayout>(Resource.Id.tabLayout);
                 tabLayout.InlineLabel = true;
                 tabLayout.TabGravity = 0;
+                
+               
 
                 pager = FindViewById<ViewPager2>(Resource.Id.pager);
                 pager.OffscreenPageLimit=3;//позволяет адакватно реагировать на нажатие кнопок
@@ -160,6 +162,10 @@ namespace NavigationDrawerStarter
         protected override void OnStart()
         {
             base.OnStart();
+           for(int i =0; i<tabLayout.TabCount; i++)
+                tabLayout.GetTabAt(i).View.LayoutParameters.Width = LinearLayoutCompat.LayoutParams.WrapContent;
+
+
         }
         protected override void OnResume()
         {

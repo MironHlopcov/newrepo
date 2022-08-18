@@ -1,5 +1,6 @@
 ﻿using Android.Graphics.Drawables;
 using AndroidX.AppCompat.Content.Res;
+using AndroidX.AppCompat.Widget;
 using AndroidX.Core.Content;
 using AndroidX.Core.Graphics.Drawable;
 using Google.Android.Material.Badge;
@@ -34,10 +35,13 @@ namespace NavigationDrawerStarter
 
                 //p0.SetText(MainActivity.fragmentTitles[p1]);
                 p0.SetIcon(MainActivity.tabIcons[p1]);
-                //p0.SetText("The number of transactions and their amount will be displayed here");
-
-                p0.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
+                //var layoutParams = p0.View.LayoutParameters;
+                //p0.SetTabLabelVisibility(TabLayout.TabLabelVisibilityLabeled);
+                //layoutParams.Width = LinearLayoutCompat.LayoutParams.WrapContent;
+                //p0.View.LayoutParameters = layoutParams;
                 p0.SetText(p0.Text);
+                p0.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
+               
             }
            
         }

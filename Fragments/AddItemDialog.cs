@@ -247,9 +247,13 @@ namespace NavigationDrawerStarter.Fragments
 
             DateTime itDateTime = DateTime.Parse(date_text_edit1.Text + " " + date_text_edit2.Text);
             while (DatesRepositorio.DataItems.Any(x => x.Date == itDateTime))
-                itDateTime = itDateTime.Second == 59 ?
-                    itDateTime.Date.AddSeconds(-59) :
-                    itDateTime.Date.AddSeconds(1);
+            {
+                if (itDateTime.Second == 59)
+                    itDateTime = itDateTime.AddSeconds(-59);
+                else
+                    itDateTime = itDateTime.AddSeconds(1);
+            }
+
 
             #region DateCheck
             if (date_text_edit1.Text == "")
