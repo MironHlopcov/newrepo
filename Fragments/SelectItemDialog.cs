@@ -31,13 +31,13 @@ namespace NavigationDrawerStarter.Fragments
         private Android.Widget.AutoCompleteTextView autocompleteTVOperTyp;
         private TextInputLayout wrap_aut_comp_tv_OperationTyp;
         private TextInputEditText summOper;
-        
+
         private Android.Widget.AutoCompleteTextView autCompTvOperationDiscription;
         private TextInputLayout aut_comp_tv_OperationDiscription;
-        
+
         private Android.Widget.AutoCompleteTextView autCompTvOperationMccCode;
         private TextInputLayout aut_comp_tv_OperationMccCode;
-        
+
         private Android.Widget.AutoCompleteTextView autCompTvOperationMccDiscription;
         private TextInputLayout aut_comp_tv_OperationMccDiscription;
 
@@ -125,29 +125,43 @@ namespace NavigationDrawerStarter.Fragments
             #endregion
 
             #region OperationDiscription
-            autCompTvOperationDiscription = view.FindViewById<Android.Widget.AutoCompleteTextView>(Resource.Id.aut_comp_tv_OperationDiscription);
-            autCompTvOperationDiscription.Text = selectedItem.Descripton;
-            autCompTvOperationDiscription.Focusable = false;
-            aut_comp_tv_OperationDiscription = view.FindViewById<TextInputLayout>(Resource.Id.wrap_tv_OperationDiscription);
-            aut_comp_tv_OperationDiscription.EndIconVisible = false;
 
+            aut_comp_tv_OperationDiscription = view.FindViewById<TextInputLayout>(Resource.Id.wrap_tv_OperationDiscription);
+            if (selectedItem.Descripton != "")
+            {
+                autCompTvOperationDiscription = view.FindViewById<Android.Widget.AutoCompleteTextView>(Resource.Id.aut_comp_tv_OperationDiscription);
+                autCompTvOperationDiscription.Text = selectedItem.Descripton;
+                autCompTvOperationDiscription.Focusable = false;
+                aut_comp_tv_OperationDiscription.EndIconVisible = false;
+            }
+            else
+                aut_comp_tv_OperationDiscription.Visibility = ViewStates.Gone;
             #endregion
 
             #region OperationMccCode
-            autCompTvOperationMccCode = view.FindViewById<Android.Widget.AutoCompleteTextView>(Resource.Id.aut_comp_tv_OperationMccCode);
-            autCompTvOperationMccCode.Text = selectedItem.MCC.ToString();
-            autCompTvOperationMccCode.Focusable = false;
             aut_comp_tv_OperationMccCode = view.FindViewById<TextInputLayout>(Resource.Id.wrap_tv_OperationMccCode);
-            aut_comp_tv_OperationMccCode.EndIconVisible = false;
+            if (selectedItem.MCC != 0)
+            {
+                autCompTvOperationMccCode = view.FindViewById<Android.Widget.AutoCompleteTextView>(Resource.Id.aut_comp_tv_OperationMccCode);
+                autCompTvOperationMccCode.Text = selectedItem.MCC.ToString();
+                autCompTvOperationMccCode.Focusable = false;
+                aut_comp_tv_OperationMccCode.EndIconVisible = false;
+            }
+            else
+                aut_comp_tv_OperationMccCode.Visibility = ViewStates.Gone;
             #endregion
 
             #region OperationMccDiscription
-            autCompTvOperationMccDiscription = view.FindViewById<Android.Widget.AutoCompleteTextView>(Resource.Id.aut_comp_tv_OperationMccDiscription);
-            autCompTvOperationMccDiscription.Text = selectedItem.MccDeskription;
-            autCompTvOperationMccDiscription.Focusable = false;
             aut_comp_tv_OperationMccDiscription = view.FindViewById<TextInputLayout>(Resource.Id.wrap_tv_OperationMccDiscription);
-            aut_comp_tv_OperationMccDiscription.EndIconVisible = false;
-
+            if (selectedItem.MccDeskription != null)
+            {
+                autCompTvOperationMccDiscription = view.FindViewById<Android.Widget.AutoCompleteTextView>(Resource.Id.aut_comp_tv_OperationMccDiscription);
+                autCompTvOperationMccDiscription.Text = selectedItem.MccDeskription;
+                autCompTvOperationMccDiscription.Focusable = false;
+                aut_comp_tv_OperationMccDiscription.EndIconVisible = false;
+            }
+            else
+                aut_comp_tv_OperationMccDiscription.Visibility = ViewStates.Gone;
             #endregion
 
             #region ChipGroup
@@ -308,7 +322,7 @@ namespace NavigationDrawerStarter.Fragments
             var plotModelWidth = plotModel1.Width;
 
             var pieSeriessumCountMcc = new CustomPieSeries();
-            
+
             pieSeriessumCountMcc.Diameter = 1;
             pieSeriessumCountMcc.StartAngle = 60;
             pieSeriessumCountMcc.TextColor = textColor;

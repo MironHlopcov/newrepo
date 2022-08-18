@@ -331,6 +331,11 @@ namespace NavigationDrawerStarter.Fragments
             builder.SetCancelable(false);
             builder.SetPositiveButton("Да", async (c, ev) =>
             {
+                foreach (var item in DatesRepositorio.DataItems.Where(x => x.UnreachableOperacionTyp == item.UnreachableOperacionTyp))
+                {
+                    DataItem newItem = new DataItem(newValue.OperacionTyp, item.Date);
+                    DatesRepositorio.UpdateItemValue(item.Id, newItem);
+                }
                 #region ConfigManager
                 ConfigurationManager configManager = ConfigurationManager.ConfigManager;
                 var configuration = configManager.BankConfigurationFromJson;

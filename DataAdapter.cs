@@ -30,25 +30,25 @@ namespace NavigationDrawerStarter
             {
                 case 0:
                     this.dataItems = DatesRepositorio.Payments;
-                    DatesRepositorio.PaymentsChange += (s, e) => { 
+                    DatesRepositorio.PaymentsChanged += (s, e) => { 
                         NotifyDataSetChanged(); 
                     };
                     break;
                 case 1:
                     this.dataItems = DatesRepositorio.Deposits;
-                    DatesRepositorio.DepositsChange += (s, e) => { 
+                    DatesRepositorio.DepositsChanged += (s, e) => { 
                         NotifyDataSetChanged(); 
                     };
                     break;
                 case 2:
                     this.dataItems = DatesRepositorio.Cashs;
-                    DatesRepositorio.CashsChange += (s, e) => { 
+                    DatesRepositorio.CashsChanged += (s, e) => { 
                         NotifyDataSetChanged(); 
                     };
                     break;
                 case 3:
                     this.dataItems = DatesRepositorio.Unreachable;
-                    DatesRepositorio.UnreachableChange += (s, e) => {
+                    DatesRepositorio.UnreachableChanged += (s, e) => {
                         NotifyDataSetChanged(); 
                     };
                     break;

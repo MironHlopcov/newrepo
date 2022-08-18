@@ -32,10 +32,10 @@ namespace NavigationDrawerStarter
         private static readonly string fileName = "Cats.db";
         private static readonly string dbFullPath = Path.Combine(dbFolder, fileName);
 
-        public static event EventHandler PaymentsChange;
-        public static event EventHandler DepositsChange;
-        public static event EventHandler CashsChange;
-        public static event EventHandler UnreachableChange;
+        public static event EventHandler PaymentsChanged;
+        public static event EventHandler DepositsChanged;
+        public static event EventHandler CashsChanged;
+        public static event EventHandler UnreachableChanged;
 
         public static async Task SetDatasFromDB()
         {
@@ -169,25 +169,25 @@ namespace NavigationDrawerStarter
             {
                 Payments.Clear();
                 Payments.AddRange(GetPayments(ordetDataItems));
-                PaymentsChange?.Invoke(Payments, EventArgs.Empty);
+                PaymentsChanged?.Invoke(Payments, EventArgs.Empty);
             }
             if (!GetDeposits(ordetDataItems).Equals(Deposits))
             {
                 Deposits.Clear();
                 Deposits.AddRange(GetDeposits(ordetDataItems));
-                DepositsChange?.Invoke(Deposits, EventArgs.Empty);
+                DepositsChanged?.Invoke(Deposits, EventArgs.Empty);
             }
             if (!GetCashs(ordetDataItems).Equals(Cashs))
             {
                 Cashs.Clear();
                 Cashs.AddRange(GetCashs(ordetDataItems));
-                CashsChange?.Invoke(Cashs, EventArgs.Empty);
+                CashsChanged?.Invoke(Cashs, EventArgs.Empty);
             }
             if (!GetUnreachable(ordetDataItems).Equals(Unreachable))
             {
                 Unreachable.Clear();
                 Unreachable.AddRange(GetUnreachable(ordetDataItems));
-                UnreachableChange?.Invoke(Unreachable, EventArgs.Empty);
+                UnreachableChanged?.Invoke(Unreachable, EventArgs.Empty);
             }
 
             stopWatch.Stop();

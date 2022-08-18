@@ -22,13 +22,13 @@ namespace NavigationDrawerStarter.Parsers
             BankConfigurations = bankConfigurations;
             Data = new List<DataItem>();
             smslist = data;
-            ToDataItems();
+            SmsToDataItems();
         }
         public List<DataItem> GetData()
         {
             return Data;
         }
-        private void ToDataItems()
+        private void SmsToDataItems()
         {
             foreach (Sms sms in smslist)
             {
@@ -40,8 +40,8 @@ namespace NavigationDrawerStarter.Parsers
                 var BelarusbankSmsRegex = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().SmsParseRegex;
               
                 OperacionTyps operType;
-              
                 var parselableOperTyp = new Regex(BelarusbankSmsRegex.OperacionTyp).Match(msg).Value.ToString();
+
                 var operTyptempls = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First();
                 if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().PaymentTemplates.Contains(parselableOperTyp))
                     operType = OperacionTyps.OPLATA;

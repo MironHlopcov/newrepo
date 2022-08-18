@@ -12,7 +12,8 @@ namespace NavigationDrawerStarter.Configs.ManagerCore
         /// holds a reference to the single created instance, if any.
         /// </summary>
         private static readonly Lazy<ConfigurationManager> lazy = new Lazy<ConfigurationManager>(() => new ConfigurationManager());
-
+        
+        public static event EventHandler ConfigurationManagerChanged;
         /// <summary>
         /// Getting reference to the single created instance, creating one if necessary.
         /// </summary>
@@ -87,6 +88,7 @@ namespace NavigationDrawerStarter.Configs.ManagerCore
         public void Save()
         {
             Write(BankConfigurationFromJson);
+            ConfigurationManagerChanged?.Invoke(this, EventArgs.Empty);
         }
     }
 }

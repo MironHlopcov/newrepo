@@ -31,7 +31,7 @@ namespace EfcToXamarinAndroid.Core
         public List<SybCategory>? SubCategorys { get; private set; }
         public string? UnreachableText { get; private set; }
         public string? UnreachableOperacionTyp { get; set; }
-        public string? SmsAdress { get;  set; }
+        public string? SmsAdress { get; set; }
 
 
 
@@ -63,12 +63,17 @@ namespace EfcToXamarinAndroid.Core
             {
                 Date = dataItem.Date;
                 HashId = Date.AddMilliseconds(-(Date.Second * 1000)).Ticks;
-            }    
+            }
             DefaultCategoryTyps = dataItem.DefaultCategoryTyps;
             CastomCategoryTyps = dataItem.CastomCategoryTyps;
             SubCategorys = dataItem.SubCategorys;
             IsParent = true; //помечаем запись как редактированную
         }
+  //goto      //public void SetOperTyp(OperacionTyps type)
+        //{
+        //    if (OperacionTyp == null)
+        //        OperacionTyp = type;
+        //}
         public override string ToString()
         {
             return $"{Sum} {Descripton} {Date} ";
