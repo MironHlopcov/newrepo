@@ -333,13 +333,15 @@ namespace NavigationDrawerStarter.Fragments
             {
                 foreach (var item in DatesRepositorio.DataItems.Where(x => x.UnreachableOperacionTyp == item.UnreachableOperacionTyp))
                 {
-                    DataItem newItem = new DataItem(newValue.OperacionTyp, item.Date);
-                    DatesRepositorio.UpdateItemValue(item.Id, newItem);
+                    item.SetOperTyp(newValue.OperacionTyp);
+                    DatesRepositorio.UpdateItemValue(item.Id, item);
                 }
+                
                 #region ConfigManager
                 ConfigurationManager configManager = ConfigurationManager.ConfigManager;
                 var configuration = configManager.BankConfigurationFromJson;
                 #endregion
+
                 var bank = configuration.Banks.Where(x => x.SmsNumber == item.SmsAdress).First();
                 List<string> temp = new List<string>();
                 switch (newValue.OperacionTyp)
@@ -404,12 +406,12 @@ namespace NavigationDrawerStarter.Fragments
 
             if (selectedItem.OperacionTyp == OperacionTyps.UNREACHABLE && item.OperacionTyp != selectedItem.OperacionTyp)
             {
+                if(selectedItem.UnreachableOperacionTyp!="")
                 ChengBankConfig(selectedItem, item);
             }
 
             DatesRepositorio.UpdateItemValue(selectedItem.Id, item);
-         OnEditItemChange(this, e);
-
+            OnEditItemChange(this, e);
         }
 
         private void Toolbar_NavigationClick(object sender, Toolbar.NavigationClickEventArgs e)

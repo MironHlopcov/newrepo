@@ -139,7 +139,7 @@ namespace NavigationDrawerStarter
                 {
                     Resource.Mipmap.ic_cash50,
                     Resource.Mipmap.ic_in_deposit50,
-                    Resource.Mipmap.ic_cashOut51,
+                    Resource.Mipmap.ic_cash_out111,
                     Resource.Mipmap.ic_error,
 
                 };
@@ -210,9 +210,7 @@ namespace NavigationDrawerStarter
             {
                 await DatesRepositorio.AddDatas(data);//This operation took 10825
                 UpdateBadgeToTabs();
-                //adapter.AddNewItemToFragments();
             }
-            // adapter.NotifyDataSetChanged();
         }
 
         private void UpdateBadgeToTabs()
@@ -339,44 +337,6 @@ namespace NavigationDrawerStarter
         {
             int id = item.ItemId;
 
-            //var test = DatesRepositorio.DataItems.Select(x => x.Descripton);
-            //var test2 = DatesRepositorio.DataItems.Select(x => x.GetType().GetProperty("Descripton").GetValue(x, null));
-
-            #region FilterBtnClicTest
-            //if (id == Resource.Id.action_openRight)
-            //{
-            //    if (_RightMenu == null)
-            //    {
-            //        DataItem props = null;
-
-            //        _RightMenuT = new RightMenuT<DataItem>("Descripton", "Date", new string[] { "Id", "HashId", "Balance" }, DatesRepositorio.DataItems);
-            //        _RightMenuT.FiltredList = DatesRepositorio.DataItems;
-
-
-            //        var filterFragmentTransaction = SupportFragmentManager.BeginTransaction();
-            //        filterFragmentTransaction.Add(Resource.Id.MenuFragmentFrame, _RightMenuT, "MENU");
-            //        filterFragmentTransaction.Commit();
-            //        //_RightMenuT.FiltredList = DatesRepositorio.DataItems.Select(x => x.Descripton).ToList<string>();
-            //        drawer.OpenDrawer(GravityCompat.End);
-
-            //        //_RightMenu.SetFilters += (object sender, EventArgs e) =>
-            //        //{
-            //        //    var filter = ((RightMenu)sender).FilredResultList;
-            //        //    drawer.CloseDrawer(GravityCompat.End);
-            //        //    //drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed);
-            //        //    var fltr = DatesRepositorio.MFilter;
-            //        //    fltr.GetResult(x => x.Descripton.Contains("TEST"));
-            //        //    adapter.UpdateFragments();
-            //        //};
-            //        return true;
-            //    }
-            //    else
-            //    {
-            //        drawer.OpenDrawer(GravityCompat.End);
-            //    }
-            //}
-            #endregion
-
             #region FilterBtnClic
             if (id == Resource.Id.action_openRight)
             {
@@ -406,7 +366,7 @@ namespace NavigationDrawerStarter
 
                     drawer.OpenDrawer(GravityCompat.End);
 
-                    _RightMenu.SetFilters += (object sender, EventArgs e) =>
+                    _RightMenu.FiltersSet += (object sender, EventArgs e) =>
                     {
 
                         var filter = ((RightMenu)sender).FilredResultList;

@@ -50,7 +50,7 @@ namespace EfcToXamarinAndroid.Core
         public void SetNewValues(DataItem dataItem)
         {
             OperacionTyp = dataItem.OperacionTyp;
-            Balance = dataItem.Balance;
+            //Balance = dataItem.Balance;
             if (!IsParent) //если запись не редактировалась
                 if (ParentId == 0) // и если у записи нет предков 
                     OldSum = Sum;
@@ -64,16 +64,16 @@ namespace EfcToXamarinAndroid.Core
                 Date = dataItem.Date;
                 HashId = Date.AddMilliseconds(-(Date.Second * 1000)).Ticks;
             }
-            DefaultCategoryTyps = dataItem.DefaultCategoryTyps;
-            CastomCategoryTyps = dataItem.CastomCategoryTyps;
-            SubCategorys = dataItem.SubCategorys;
+            //DefaultCategoryTyps = dataItem.DefaultCategoryTyps;
+            //CastomCategoryTyps = dataItem.CastomCategoryTyps;
+            //SubCategorys = dataItem.SubCategorys;
             IsParent = true; //помечаем запись как редактированную
         }
-  //goto      //public void SetOperTyp(OperacionTyps type)
-        //{
-        //    if (OperacionTyp == null)
-        //        OperacionTyp = type;
-        //}
+        public void SetOperTyp(OperacionTyps type)
+        {
+            if(OperacionTyp==OperacionTyps.UNREACHABLE)
+                OperacionTyp = type;
+        }
         public override string ToString()
         {
             return $"{Sum} {Descripton} {Date} ";
