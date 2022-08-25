@@ -48,16 +48,62 @@ namespace NavigationDrawerStarter
 
                 listAdapter.OnDataSetChanged += (AndroidX.Fragment.App.Fragment context) =>
                 {
-                    TabLayout listView = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
-                    var tab = listView.GetTabAt(Index);
+                    TabLayout tabLayout = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
+                    var tab = tabLayout.GetTabAt(Index);
                     int oldCount = 0;
                     int.TryParse(tab.Text.Split(":")[0], out oldCount);
                     tab.SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
+                    UpdateBadgeToTabs(tabLayout, Index);
                 };
 
                 TabLayout listView = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
                 listView.GetTabAt(Index).SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
+                if (ListData.Count > 0)
+                   UpdateBadgeToTabs((TabLayout)Activity.FindViewById(Resource.Id.tabLayout), Index);
                 return ViewAD;
+            }
+            private void UpdateBadgeToTabs(TabLayout tabLayout, int index)
+            {
+                if (DatesRepositorio.NewDataItems != null)
+                {
+                    int newItemsCount = 0;
+                    BadgeDrawable badge;
+                    switch (index)
+                    {
+                        case 0:
+                            newItemsCount = DatesRepositorio.GetPayments(DatesRepositorio.NewDataItems).Count;
+                            if (newItemsCount < 1)
+                                break;
+                            badge = tabLayout.GetTabAt(index).OrCreateBadge;
+                            badge.Number = newItemsCount;
+                            badge.BadgeGravity = BadgeDrawable.TopStart;
+                            break;
+                        case 1:
+                            newItemsCount = DatesRepositorio.GetDeposits(DatesRepositorio.NewDataItems).Count;
+                            if (newItemsCount < 1)
+                                break;
+                            badge = tabLayout.GetTabAt(index).OrCreateBadge;
+                            badge.Number = newItemsCount;
+                            badge.BadgeGravity = BadgeDrawable.TopStart;
+                            break;
+                        case 2:
+                            newItemsCount = DatesRepositorio.GetCashs(DatesRepositorio.NewDataItems).Count;
+                            if (newItemsCount < 1)
+                                break;
+                            badge = tabLayout.GetTabAt(index).OrCreateBadge;
+                            badge.Number = newItemsCount;
+                            badge.BadgeGravity = BadgeDrawable.TopStart;
+                            break;
+                        case 3:
+                            newItemsCount = DatesRepositorio.GetUnreachable(DatesRepositorio.NewDataItems).Count;
+                            if (newItemsCount < 1)
+                                break;
+                            badge = tabLayout.GetTabAt(index).OrCreateBadge;
+                            badge.Number = newItemsCount;
+                            badge.BadgeGravity = BadgeDrawable.TopStart;
+                            break;
+                    }
+                }
             }
 
             public void OnItemClickDeletAfter(AdapterView parent, View view, int position, long id)
@@ -116,7 +162,7 @@ namespace NavigationDrawerStarter
                 var dialog = new SelectItemDialog(ListData[position]);
                 dialog.EditItemChange += (sender, e) =>
                 {
-//////                    DataAdapter.NotifyDataSetChanged();
+                    //////                    DataAdapter.NotifyDataSetChanged();
                     dialog.Dismiss();
                 };
                 dialog.Display(Activity.SupportFragmentManager);
@@ -132,7 +178,7 @@ namespace NavigationDrawerStarter
                     var dialog = new EditItemDialog(ListData[position]);
                     dialog.EditItemChange += (sender, e) =>
                     {
- ////////                       DataAdapter.NotifyDataSetChanged();
+                        ////////                       DataAdapter.NotifyDataSetChanged();
                         dialog.Dismiss();
                     };
                     dialog.Display(Activity.SupportFragmentManager);
@@ -141,7 +187,7 @@ namespace NavigationDrawerStarter
                 builder.SetNegativeButton("Удалить", (c, ev) =>
                 {
                     DatesRepositorio.DeleteItem(ListData[position]);
- ///////                   DataAdapter.NotifyDataSetChanged();
+                    ///////                   DataAdapter.NotifyDataSetChanged();
                 });
                 builder.SetNeutralButton("Отмена", (c, ev) =>
                 {
@@ -161,7 +207,7 @@ namespace NavigationDrawerStarter
                     DefaultColors = new List<OxyColor>{
                     OxyColors.WhiteSmoke,
                 }
-            };
+                };
 
                 var plotModelWidth = plotModel1.Width;
 
@@ -218,6 +264,15 @@ namespace NavigationDrawerStarter
 
 
 
+            }
+
+            public override void OnSaveInstanceState(Bundle outState)
+            {
+                base.OnSaveInstanceState(outState);
+            }
+            public override void SetInitialSavedState(SavedState state)
+            {
+                base.SetInitialSavedState(state);
             }
         }
     }

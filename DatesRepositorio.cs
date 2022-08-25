@@ -37,20 +37,24 @@ namespace NavigationDrawerStarter
         public static event EventHandler CashsChanged;
         public static event EventHandler UnreachableChanged;
 
-        public static async Task SetDatasFromDB()
+        public static async Task<bool> SetDatasFromDB()
         {
             try
             {
-                using (var db = new DataItemContext(dbFullPath))
+                if (DataItems == null)
                 {
-                    await db.Database.MigrateAsync(); //We need to ensure the latest Migration was added. This is different than EnsureDatabaseCreated.
-                    DataItems = await db.Cats.ToListAsync();
-                    UpdateAutLists(DataItems);
+                    using (var db = new DataItemContext(dbFullPath))
+                    {
+                        await db.Database.MigrateAsync(); //We need to ensure the latest Migration was added. This is different than EnsureDatabaseCreated.
+                        DataItems = await db.Cats.ToListAsync();
+                        UpdateAutLists(DataItems);
+                    }
                 }
+                return true;
             }
             catch (Exception ex)
             {
-
+                return false;
                 System.Diagnostics.Debug.WriteLine(ex.ToString());
             }
         }
@@ -249,7 +253,7 @@ namespace NavigationDrawerStarter
         }
         public static List<DataItem> GetUnreachable(List<DataItem> dataItems)
         {
-            return dataItems.Where(x => x.OperacionTyp == OperacionTyps.UNREACHABLE).ToList();
+            return dataItems?.Where(x => x.OperacionTyp == OperacionTyps.UNREACHABLE).ToList();
         }
 
         public static MFilter MFilter

@@ -31,7 +31,7 @@ namespace NavigationDrawerStarter.Parsers
                 cultureInfo = new CultureInfo("ru-RU");
             }
             float number;
-            NumberStyles styles = NumberStyles.Number;
+            NumberStyles styles = NumberStyles.Float;
             bool isDouble = float.TryParse(numberString, styles, cultureInfo, out number);
             if (isDouble)
                 return number;

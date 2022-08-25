@@ -307,11 +307,6 @@ namespace NavigationDrawerStarter.Fragments
             if (isError)
                 return;
 
-
-
-
-
-
             DataItem item = new DataItem(Enum.Parse<OperacionTyps>(autocompleteTVOperTyp.Text), itDateTime);
 
             item.Sum = ParseStringToFloat.GetFloat(summOper.Text);

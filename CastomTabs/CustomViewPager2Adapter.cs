@@ -15,14 +15,17 @@ namespace NavigationDrawerStarter
             public CustomViewPager2Adapter(AndroidX.Fragment.App.FragmentManager fragmentManager, Lifecycle lifecycle) : base(fragmentManager, lifecycle)
             {
                 _fragmentManager = fragmentManager;
-
             }
-            public override int ItemCount => 4;
+            
+            public int TabCount { get; set; } = 4;
+            public override int ItemCount => TabCount;
+
             private AndroidX.Fragment.App.Fragment fragment = new AndroidX.Fragment.App.Fragment();
 
 
             public override AndroidX.Fragment.App.Fragment CreateFragment(int position)
             {
+               
                 switch (position)
                 {
                     case 0:
@@ -40,19 +43,23 @@ namespace NavigationDrawerStarter
                 }
                 return fragment;
             }
-            public void UpdateFragments()
-            {
-                if (_fragmentManager.Fragments.Count == 0)
-                    return;
-                for (int i = 0; i < _fragmentManager.Fragments.Count; i++)
-                {
-                    var ft = _fragmentManager.Fragments[i];
-                    if (!ft.Tag.Contains("MENU")&& !ft.Tag.Contains("AddItemDialog"))
-                    {
-//////                        ((ViewPage2Fragment)ft).DataAdapter.NotifyDataSetChanged();
-                    }
-                }
-            }
+
+           
+
+            
+//            public void UpdateFragments()
+//            {
+//                if (_fragmentManager.Fragments.Count == 0)
+//                    return;
+//                for (int i = 0; i < _fragmentManager.Fragments.Count; i++)
+//                {
+//                    var ft = _fragmentManager.Fragments[i];
+//                    if (!ft.Tag.Contains("MENU")&& !ft.Tag.Contains("AddItemDialog"))
+//                    {
+////////                        ((ViewPage2Fragment)ft).DataAdapter.NotifyDataSetChanged();
+//                    }
+//                }
+//            }
         }
 
     }

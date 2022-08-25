@@ -2,6 +2,8 @@
 using Android.Views;
 using Android.Widget;
 using EfcToXamarinAndroid.Core;
+using Google.Android.Material.Badge;
+using Google.Android.Material.Tabs;
 using NavigationDrawerStarter.Filters;
 using System;
 using System.Collections.Generic;
@@ -11,21 +13,21 @@ namespace NavigationDrawerStarter
 {
     public class DataAdapter : BaseAdapter<DataItem>
     {
-        private readonly AndroidX.Fragment.App.Fragment context;
+        private readonly AndroidX.Fragment.App.Fragment _fragment;
         private readonly List<DataItem> dataItems;
 
         public delegate void DataAdapterHandler(AndroidX.Fragment.App.Fragment context);
         public event DataAdapterHandler? OnDataSetChanged;
 
-        public DataAdapter(AndroidX.Fragment.App.Fragment context, List<DataItem> dataItems)
+        public DataAdapter(AndroidX.Fragment.App.Fragment fragment, List<DataItem> dataItems)
         {
-            this.context = context;
+            this._fragment = fragment;
             this.dataItems = dataItems;
         }
 
-        public DataAdapter(AndroidX.Fragment.App.Fragment context, int position)
+        public DataAdapter(AndroidX.Fragment.App.Fragment fragment, int position)
         {
-            this.context = context;
+            this._fragment = fragment;
             switch (position)
             {
                 case 0:
@@ -48,8 +50,9 @@ namespace NavigationDrawerStarter
                     break;
                 case 3:
                     this.dataItems = DatesRepositorio.Unreachable;
-                    DatesRepositorio.UnreachableChanged += (s, e) => {
-                        NotifyDataSetChanged(); 
+                    DatesRepositorio.UnreachableChanged += (s, e) =>
+                    {
+                        NotifyDataSetChanged();
                     };
                     break;
             }
@@ -79,7 +82,7 @@ namespace NavigationDrawerStarter
 
         public override View GetView(int position, View convertView, ViewGroup parent)
         {
-            var view = convertView ?? context.LayoutInflater.Inflate(Resource.Layout.list_item, parent, false);// inflate the xml for each item
+            var view = convertView ?? _fragment.LayoutInflater.Inflate(Resource.Layout.list_item, parent, false);// inflate the xml for each item
 
             var txtSum = view.FindViewById<TextView>(Resource.Id.sum_TextView);
             var txtDeskr = view.FindViewById<TextView>(Resource.Id.deskription_TextView);
@@ -104,7 +107,7 @@ namespace NavigationDrawerStarter
         public override void NotifyDataSetChanged()
         {
             base.NotifyDataSetChanged();
-            OnDataSetChanged?.Invoke(context);
+            OnDataSetChanged?.Invoke(_fragment);
         }
         #endregion
 

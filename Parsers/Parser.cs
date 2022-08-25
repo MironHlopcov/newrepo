@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Tabula;
 using Tabula.Extractors;
@@ -22,52 +23,59 @@ namespace NavigationDrawerStarter.Parsers
             BankConfigurations = bankConfigurations;
             Data = new List<DataItem>();
             smslist = data;
-            SmsToDataItems();
+           
         }
-        public List<DataItem> GetData()
+        public async Task<List<DataItem>> GetData()
         {
+            await SmsToDataItems();
             return Data;
         }
-        private void SmsToDataItems()
+        private async Task SmsToDataItems()
         {
-            foreach (Sms sms in smslist)
+            await Task.Run(() =>
             {
-                var ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
-                ci.NumberFormat.NumberDecimalSeparator = ".";
-
-                var msg = sms.getMsg();
-
-                var BelarusbankSmsRegex = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().SmsParseRegex;
-              
-                OperacionTyps operType;
-                var parselableOperTyp = new Regex(BelarusbankSmsRegex.OperacionTyp).Match(msg).Value.ToString();
-
-                var operTyptempls = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First();
-                if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().PaymentTemplates.Contains(parselableOperTyp))
-                    operType = OperacionTyps.OPLATA;
-                else if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().DepositTemplates.Contains(parselableOperTyp))
-                    operType = OperacionTyps.ZACHISLENIE;
-                else if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().СashTemplates.Contains(parselableOperTyp))
-                    operType = OperacionTyps.NALICHNYE;
-                else
-                    operType = OperacionTyps.UNREACHABLE;
-                  
-                string date = new Regex(BelarusbankSmsRegex.Date).Match(msg).Value;
-                if (date != "")
+                foreach (Sms sms in smslist)
                 {
-                    DateTime dateValue = DateTime.Parse(date);
-                    DataItem dataItem = new DataItem(operType, (DateTime)dateValue);
-                    dataItem.Sum = float.TryParse(new Regex(BelarusbankSmsRegex.Sum).Match(msg).Value, NumberStyles.Any, ci, out float tempSum) ? tempSum : default;
-                    dataItem.Balance = float.TryParse(new Regex(BelarusbankSmsRegex.Balance).Match(msg).Value, NumberStyles.Any, ci, out float tempBalance) ? tempBalance : default;
-                    dataItem.Karta = int.TryParse(new Regex(BelarusbankSmsRegex.Karta).Match(msg).Value, NumberStyles.Any, ci, out int tempKarta) ? tempKarta : default;
-                    dataItem.MCC = int.TryParse(new Regex(BelarusbankSmsRegex.Mcc).Match(msg).Value, NumberStyles.Any, ci, out int tempMcc) ? tempMcc : default;
-                    dataItem.Descripton = new Regex(BelarusbankSmsRegex.Descripton).Match(msg).Value.Trim(' ').ToUpper();
-                    dataItem.SmsAdress = sms.getAddress();
-                    if (operType == OperacionTyps.UNREACHABLE)
-                        dataItem.UnreachableOperacionTyp = parselableOperTyp;
-                    Data.Add(dataItem);
+                   // Thread.Sleep(100);
+
+                    var ci = (CultureInfo)CultureInfo.CurrentCulture.Clone();
+                    ci.NumberFormat.NumberDecimalSeparator = ".";
+
+                    var msg = sms.getMsg();
+
+                    var BelarusbankSmsRegex = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().SmsParseRegex;
+
+                    OperacionTyps operType;
+                    var parselableOperTyp = new Regex(BelarusbankSmsRegex.OperacionTyp).Match(msg).Value.ToString();
+
+                    var operTyptempls = BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First();
+                    if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().PaymentTemplates.Contains(parselableOperTyp))
+                        operType = OperacionTyps.OPLATA;
+                    else if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().DepositTemplates.Contains(parselableOperTyp))
+                        operType = OperacionTyps.ZACHISLENIE;
+                    else if (BankConfigurations.Where(x => x.SmsNumber == sms.getAddress()).First().СashTemplates.Contains(parselableOperTyp))
+                        operType = OperacionTyps.NALICHNYE;
+                    else
+                        operType = OperacionTyps.UNREACHABLE;
+
+                    string date = new Regex(BelarusbankSmsRegex.Date).Match(msg).Value;
+                    if (date != "")
+                    {
+                        DateTime dateValue = DateTime.Parse(date);
+                        DataItem dataItem = new DataItem(operType, (DateTime)dateValue);
+                        dataItem.Sum = float.TryParse(new Regex(BelarusbankSmsRegex.Sum).Match(msg).Value, NumberStyles.Any, ci, out float tempSum) ? tempSum : default;
+                        dataItem.Balance = float.TryParse(new Regex(BelarusbankSmsRegex.Balance).Match(msg).Value, NumberStyles.Any, ci, out float tempBalance) ? tempBalance : default;
+                        dataItem.Karta = int.TryParse(new Regex(BelarusbankSmsRegex.Karta).Match(msg).Value, NumberStyles.Any, ci, out int tempKarta) ? tempKarta : default;
+                        dataItem.MCC = int.TryParse(new Regex(BelarusbankSmsRegex.Mcc).Match(msg).Value, NumberStyles.Any, ci, out int tempMcc) ? tempMcc : default;
+                        dataItem.Descripton = new Regex(BelarusbankSmsRegex.Descripton).Match(msg).Value.Trim(' ').ToUpper();
+                        dataItem.SmsAdress = sms.getAddress();
+                        if (operType == OperacionTyps.UNREACHABLE)
+                            dataItem.UnreachableOperacionTyp = parselableOperTyp;
+                        Data.Add(dataItem);
+                    }
                 }
-            }
+            });
+           
         }
 
         string _pdfRepportPatch;

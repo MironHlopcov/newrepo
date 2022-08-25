@@ -18,7 +18,7 @@ namespace NavigationDrawerStarter.Configs.ManagerCore
         /// Getting reference to the single created instance, creating one if necessary.
         /// </summary>
         public static ConfigurationManager ConfigManager { get; } = lazy.Value;
-        private string filename = System.IO.Path.
+        private string localFileName = System.IO.Path.
             Combine(System.Environment.GetFolderPath(System.Environment.SpecialFolder.Personal), "ConfigBank.json");
         public AppConfiguration BankConfigurationFromJson { get; set; }
         private ConfigurationManager()
@@ -50,7 +50,7 @@ namespace NavigationDrawerStarter.Configs.ManagerCore
         {
             AppConfiguration configs;
            
-            if (!File.Exists(filename))
+            if (!File.Exists(localFileName))
             {
                 var assembly = Assembly.GetExecutingAssembly();
                 string resourceName = "NavigationDrawerStarter.Configs.ConfigBank.json";
@@ -66,7 +66,7 @@ namespace NavigationDrawerStarter.Configs.ManagerCore
             else
             {
                 string jsonFile = "";
-                using (StreamReader reader = new StreamReader(filename))
+                using (StreamReader reader = new StreamReader(localFileName))
                 {
                     jsonFile = reader.ReadToEnd(); //Make string equal to full file
                 }
@@ -79,7 +79,7 @@ namespace NavigationDrawerStarter.Configs.ManagerCore
         {
             var serializer = new JsonSerializer();
 
-            using (var sw = new StreamWriter(filename))
+            using (var sw = new StreamWriter(localFileName))
             using (JsonWriter writer = new JsonTextWriter(sw))
             {
                 serializer.Serialize(writer, appConfiguration);

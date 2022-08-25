@@ -11,10 +11,13 @@ using Android.OS;
 using Android.Runtime;
 
 using Android.Views;
+using Android.Widget;
 using AndroidX.AppCompat.App;
 using AndroidX.AppCompat.Widget;
+using AndroidX.Core.Content;
 using AndroidX.Core.View;
 using AndroidX.DrawerLayout.Widget;
+using AndroidX.Preference;
 using AndroidX.ViewPager2.Widget;
 using EfcToXamarinAndroid.Core;
 using Google.Android.Material.Badge;
@@ -26,6 +29,7 @@ using NavigationDrawerStarter.Configs.ManagerCore;
 using NavigationDrawerStarter.Fragments;
 using NavigationDrawerStarter.Models;
 using NavigationDrawerStarter.Parsers;
+using NavigationDrawerStarter.Settings;
 using Xamarin.Essentials;
 
 namespace NavigationDrawerStarter
@@ -52,8 +56,12 @@ namespace NavigationDrawerStarter
 
             Configuration config = this.Resources.Configuration;
             var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
-            if (ThemeMode) this.SetTheme(Resource.Style.DarkTheme);
-            else this.SetTheme(Resource.Style.LightTheme);
+            if (ThemeMode)
+                this.SetTheme(Resource.Style.DarkTheme);
+            else
+                this.SetTheme(Resource.Style.LightTheme);
+
+
 
             //Configuration config = this.Resources.Configuration;
             //var ThemeMode = config.UiMode == (UiMode.NightYes | UiMode.TypeNormal);
@@ -64,8 +72,8 @@ namespace NavigationDrawerStarter
 
             savedInstanceState = null;
             base.OnCreate(savedInstanceState);
-            if (savedInstanceState == null)
-            {
+            //if (savedInstanceState == null)
+            //{
                 #region Stock
                 //base.OnCreate(savedInstanceState);
 
@@ -75,13 +83,15 @@ namespace NavigationDrawerStarter
                 var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
                 SetSupportActionBar(toolbar);
 
+
                 FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
                 fab.Click += FabOnClick;
 
                 drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
                 ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
                 drawer.AddDrawerListener(toggle);
-                //drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed);
+                drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed, GravityCompat.End);
+
                 toggle.SyncState();
 
                 NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
@@ -102,11 +112,11 @@ namespace NavigationDrawerStarter
                 tabLayout = FindViewById<TabLayout>(Resource.Id.tabLayout);
                 tabLayout.InlineLabel = true;
                 tabLayout.TabGravity = 0;
-                
-               
+
+
 
                 pager = FindViewById<ViewPager2>(Resource.Id.pager);
-                pager.OffscreenPageLimit=3;//позволяет адакватно реагировать на нажатие кнопок
+                pager.OffscreenPageLimit = 3;//позволяет адакватно реагировать на нажатие кнопок
 
                 tabLayout.TabSelected += (object sender, TabLayout.TabSelectedEventArgs e) =>
                 {
@@ -146,26 +156,52 @@ namespace NavigationDrawerStarter
                 pager.Adapter = adapter;
 
                 new TabLayoutMediator(tabLayout, pager, new CustomStrategy()).Attach();
-                adapter.NotifyDataSetChanged();
+                //              //adapter.NotifyDataSetChanged();
 
                 #endregion
 
                 #region ReadSmS
                 //smsFilters.AddRange(configuration.Banks); //This operation took 5420
                 //List<Sms> lst = await GetAllSmsAsync(smsFilters);// This operation took 1356
-                await ParseSmsToDbAsync(configuration.Banks);//This operation took 56
+               ParseSmsToDbAsync(configuration.Banks);//This operation took 56
 
                 #endregion
-            }
+
+
+            //}
         }
+
+        private void SetSettings()
+        {
+            var prefs = PreferenceManager.GetDefaultSharedPreferences(this);
+            object showunreashables;
+            prefs.All.TryGetValue("key_showunreashables", out showunreashables);
+            switch (showunreashables)
+            {
+                case "1":
+                    adapter.TabCount = 4;
+                    break;
+                case "2":
+                    adapter.TabCount = 3;
+                    break;
+                //case "3":
+                //    if (DatesRepositorio.GetUnreachable(DatesRepositorio.NewDataItems)?.Count > 0)
+                //        adapter.TabCount = 4;
+                //    else
+                //        adapter.TabCount = 3;
+                //    break;
+                default:
+                    break;
+            };
+        }
+
         #region ViewLifecucle
         protected override void OnStart()
         {
+            SetSettings();
             base.OnStart();
-           for(int i =0; i<tabLayout.TabCount; i++)
+            for (int i = 0; i < tabLayout.TabCount; i++)
                 tabLayout.GetTabAt(i).View.LayoutParameters.Width = LinearLayoutCompat.LayoutParams.WrapContent;
-
-
         }
         protected override void OnResume()
         {
@@ -199,64 +235,65 @@ namespace NavigationDrawerStarter
         }
         #endregion
 
+
         private async Task ParseSmsToDbAsync(List<BankConfiguration> bankConfigurations)
         {
             SmsReader smsReader = new SmsReader(this);
             List<Sms> smsList = await smsReader.GetAllSmsAsync(bankConfigurations);
 
             Parser parserBelarusbank = new Parser(smsList, bankConfigurations);//This operation took 3558
-            var data = parserBelarusbank.GetData();
+            var data = await parserBelarusbank.GetData();
             if (data != null)
             {
                 await DatesRepositorio.AddDatas(data);//This operation took 10825
-                UpdateBadgeToTabs();
+                                                             //               UpdateBadgeToTabs();
             }
         }
 
-        private void UpdateBadgeToTabs()
-        {
-            for (int i = 0; i < tabLayout.TabCount; i++)
-            {
-                int newItemsCount = 0;
-                BadgeDrawable badge;
-                switch (i)
-                {
-                    case 0:
-                        newItemsCount = DatesRepositorio.GetPayments(DatesRepositorio.NewDataItems).Count;
-                        if (newItemsCount < 1)
-                            break;
-                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
-                        badge.Number = newItemsCount;
-                        badge.BadgeGravity = BadgeDrawable.TopStart;
-                        break;
-                    case 1:
-                        newItemsCount = DatesRepositorio.GetDeposits(DatesRepositorio.NewDataItems).Count;
-                        if (newItemsCount < 1)
-                            break;
-                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
-                        badge.Number = newItemsCount;
-                        badge.BadgeGravity = BadgeDrawable.TopStart;
-                        break;
-                    case 2:
-                        newItemsCount = DatesRepositorio.GetCashs(DatesRepositorio.NewDataItems).Count;
-                        if (newItemsCount < 1)
-                            break;
-                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
-                        badge.Number = newItemsCount;
-                        badge.BadgeGravity = BadgeDrawable.TopStart;
-                        break;
-                    case 3:
-                        newItemsCount = DatesRepositorio.GetUnreachable(DatesRepositorio.NewDataItems).Count;
-                        if (newItemsCount < 1)
-                            break;
-                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
-                        badge.Number = newItemsCount;
-                        badge.BadgeGravity = BadgeDrawable.TopStart;
-                        break;
-                }
-            }
-            adapter.UpdateFragments();
-        }
+        //        private void UpdateBadgeToTabs()
+        //        {
+        //            for (int i = 0; i < tabLayout.TabCount; i++)
+        //            {
+        //                int newItemsCount = 0;
+        //                BadgeDrawable badge;
+        //                switch (i)
+        //                {
+        //                    case 0:
+        //                        newItemsCount = DatesRepositorio.GetPayments(DatesRepositorio.NewDataItems).Count;
+        //                        if (newItemsCount < 1)
+        //                            break;
+        //                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
+        //                        badge.Number = newItemsCount;
+        //                        badge.BadgeGravity = BadgeDrawable.TopStart;
+        //                        break;
+        //                    case 1:
+        //                        newItemsCount = DatesRepositorio.GetDeposits(DatesRepositorio.NewDataItems).Count;
+        //                        if (newItemsCount < 1)
+        //                            break;
+        //                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
+        //                        badge.Number = newItemsCount;
+        //                        badge.BadgeGravity = BadgeDrawable.TopStart;
+        //                        break;
+        //                    case 2:
+        //                        newItemsCount = DatesRepositorio.GetCashs(DatesRepositorio.NewDataItems).Count;
+        //                        if (newItemsCount < 1)
+        //                            break;
+        //                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
+        //                        badge.Number = newItemsCount;
+        //                        badge.BadgeGravity = BadgeDrawable.TopStart;
+        //                        break;
+        //                    case 3:
+        //                        newItemsCount = DatesRepositorio.GetUnreachable(DatesRepositorio.NewDataItems).Count;
+        //                        if (newItemsCount < 1)
+        //                            break;
+        //                        badge = tabLayout.GetTabAt(i).OrCreateBadge;
+        //                        badge.Number = newItemsCount;
+        //                        badge.BadgeGravity = BadgeDrawable.TopStart;
+        //                        break;
+        //                }
+        //            }
+        ////            adapter.UpdateFragments();
+        //        }
 
         async Task<bool> PickAndShowFromPdf(PickOptions options)
         {
@@ -273,10 +310,10 @@ namespace NavigationDrawerStarter
                     Parser parserBelarusbank = new Parser(result.FullPath, configuration.Banks);//This operation took 3558
                     var data = await parserBelarusbank.GetDataFromPdf();
                     await DatesRepositorio.AddDatas(data);//This operation took 10825
-                    //adapter.AddNewItemToFragments();
-                    //adapter.UpdateFragments();
-                    //adapter.NotifyDataSetChanged();
-                    UpdateBadgeToTabs();
+                                                          //adapter.AddNewItemToFragments();
+                                                          //adapter.UpdateFragments();
+                                                          //adapter.NotifyDataSetChanged();
+                                                          //                    UpdateBadgeToTabs();
                     isOk = true;
                 }
                 return isOk;
@@ -299,9 +336,9 @@ namespace NavigationDrawerStarter
                     bool isWriteable = Android.OS.Environment.MediaMounted.Equals(Android.OS.Environment.ExternalStorageState);
 
                     SerializarionToXml serializer = new SerializarionToXml();
-                    var data  = serializer.DeserializeFile(result.FullPath);
+                    var data = serializer.DeserializeFile(result.FullPath);
                     await DatesRepositorio.AddDatas(data.ToList());//This operation took 10825
-                    UpdateBadgeToTabs(); 
+                                                                   //                    UpdateBadgeToTabs();
                     isOk = true;
                 }
                 return isOk;
@@ -419,7 +456,7 @@ namespace NavigationDrawerStarter
                             }
                         }
                         drawer.CloseDrawer(GravityCompat.End);
-                        adapter.UpdateFragments();
+                        //                        adapter.UpdateFragments();
                     };
                     return true;
                 }
@@ -433,13 +470,14 @@ namespace NavigationDrawerStarter
             return base.OnOptionsItemSelected(item);
         }
 
+
         private void FabOnClick(object sender, EventArgs eventArgs)
         {
             var dialog = new AddItemDialog();
             dialog.AddedItem += (sender, e) =>
             {
 
-                UpdateBadgeToTabs();
+                //                UpdateBadgeToTabs();
                 dialog.Dismiss();
             };
             dialog.Display(SupportFragmentManager);
@@ -465,7 +503,7 @@ namespace NavigationDrawerStarter
             if (id == Resource.Id.nav_db_clear)
             {
                 AlertDialog.Builder builder = new AlertDialog.Builder(this);
-              
+
                 builder.SetTitle("Очистка базы данных");
                 builder.SetMessage("Данное действие приведет к полной очистке базы данных приложения. " +
                     "Для сохранения возможности востановить данные воспользуйтесь функцией экспорат в файл. " +
@@ -477,7 +515,7 @@ namespace NavigationDrawerStarter
                     string message;
                     message = await DatesRepositorio.DeleteAllItems() ? "База данных очищена." : "Произошла ошибка очистки базы данных.";
                     Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
-                    UpdateBadgeToTabs();
+                    //                    UpdateBadgeToTabs();
                 });
                 builder.SetNegativeButton("Отмена", (c, ev) =>
                 {
@@ -497,11 +535,11 @@ namespace NavigationDrawerStarter
                 SerializarionToXml serializer = new SerializarionToXml();
 
                 string documentsPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryDownloads).AbsolutePath;
-                string localFilename = $"FinReport{DateTime.Now.ToString().Replace('.','_').Replace(':', '_')}.xml";
+                string localFilename = $"FinReport{DateTime.Now.ToString().Replace('.', '_').Replace(':', '_')}.xml";
                 string localPath = Path.Combine(documentsPath, localFilename);
 
                 serializer.SaveToFile(localPath);
-               
+
             }
             if (id == Resource.Id.nav_restore)
             {
@@ -514,6 +552,12 @@ namespace NavigationDrawerStarter
                 message = PickAndShowFromFile(options).Result ? "Файл обработан." : "Произошла ошибка.";
                 Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
             }
+            if (id == Resource.Id.nav_manage)
+            {
+                Intent intent = new Intent(this, typeof(SettingsActivity));
+                StartActivity(intent);
+            }
+            drawer.CloseDrawer(GravityCompat.Start);
             return true;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
@@ -526,7 +570,7 @@ namespace NavigationDrawerStarter
         protected override void AttachBaseContext(Context @base)
         {
             base.AttachBaseContext(@base);
-            
+
         }
         #endregion
 

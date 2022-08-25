@@ -16,7 +16,7 @@ namespace NavigationDrawerStarter
         {
             public void OnConfigureTab(TabLayout.Tab p0, int p1)
             {
-
+                
                //// Drawable mIcon = ContextCompat.GetDrawable(p0.View.Context, MainActivity.tabIcons[p1]);
                // Drawable mIcon = AppCompatResources.GetDrawable(p0.View.Context, Resource.Mipmap.ic_cash50);
                // mIcon = DrawableCompat.Wrap(mIcon);
@@ -41,6 +41,8 @@ namespace NavigationDrawerStarter
                 //p0.View.LayoutParameters = layoutParams;
                 p0.SetText(p0.Text);
                 p0.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
+
+                p0.View.Visibility = Android.Views.ViewStates.Gone;
                
             }
            
