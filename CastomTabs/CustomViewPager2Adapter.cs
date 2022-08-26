@@ -43,9 +43,6 @@ namespace NavigationDrawerStarter
                 }
                 return fragment;
             }
-
-           
-
             
 //            public void UpdateFragments()
 //            {

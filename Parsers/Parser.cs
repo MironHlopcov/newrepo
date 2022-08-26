@@ -72,6 +72,10 @@ namespace NavigationDrawerStarter.Parsers
                         if (operType == OperacionTyps.UNREACHABLE)
                             dataItem.UnreachableOperacionTyp = parselableOperTyp;
                         Data.Add(dataItem);
+
+ //!!                   //makeAsoption
+                        if(sms.getReadState()=="0")
+                        sms.setReadState("1");
                     }
                 }
             });

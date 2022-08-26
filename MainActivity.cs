@@ -74,98 +74,98 @@ namespace NavigationDrawerStarter
             base.OnCreate(savedInstanceState);
             //if (savedInstanceState == null)
             //{
-                #region Stock
-                //base.OnCreate(savedInstanceState);
+            #region Stock
+            //base.OnCreate(savedInstanceState);
 
-                Xamarin.Essentials.Platform.Init(this, savedInstanceState);
-                SetContentView(Resource.Layout.activity_main);
+            Xamarin.Essentials.Platform.Init(this, savedInstanceState);
+            SetContentView(Resource.Layout.activity_main);
 
-                var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
-                SetSupportActionBar(toolbar);
-
-
-                FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
-                fab.Click += FabOnClick;
-
-                drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
-                ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
-                drawer.AddDrawerListener(toggle);
-                drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed, GravityCompat.End);
-
-                toggle.SyncState();
-
-                NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
-                navigationView.SetNavigationItemSelectedListener(this);
-                #endregion
-
-                #region ConfigManager
-                ConfigurationManager configManager = ConfigurationManager.ConfigManager;
-                var configuration = configManager.BankConfigurationFromJson;
-                #endregion
-
-                #region ShowDataFromDb
-                await DatesRepositorio.SetDatasFromDB();
-                #endregion
-
-                #region Castom Tab
-
-                tabLayout = FindViewById<TabLayout>(Resource.Id.tabLayout);
-                tabLayout.InlineLabel = true;
-                tabLayout.TabGravity = 0;
+            var toolbar = FindViewById<AndroidX.AppCompat.Widget.Toolbar>(Resource.Id.toolbar);
+            SetSupportActionBar(toolbar);
 
 
+            FloatingActionButton fab = FindViewById<FloatingActionButton>(Resource.Id.fab);
+            fab.Click += FabOnClick;
 
-                pager = FindViewById<ViewPager2>(Resource.Id.pager);
-                pager.OffscreenPageLimit = 3;//позволяет адакватно реагировать на нажатие кнопок
+            drawer = FindViewById<DrawerLayout>(Resource.Id.drawer_layout);
+            ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(this, drawer, toolbar, Resource.String.navigation_drawer_open, Resource.String.navigation_drawer_close);
+            drawer.AddDrawerListener(toggle);
+            drawer.SetDrawerLockMode(DrawerLayout.LockModeLockedClosed, GravityCompat.End);
 
-                tabLayout.TabSelected += (object sender, TabLayout.TabSelectedEventArgs e) =>
-                {
-                    var tab = e.Tab;
-                    var layout = tab.View;
+            toggle.SyncState();
 
-                    var layoutParams = layout.LayoutParameters;// as AndroidX.AppCompat.Widget.LinearLayoutCompat.LayoutParams;
+            NavigationView navigationView = FindViewById<NavigationView>(Resource.Id.nav_view);
+            navigationView.SetNavigationItemSelectedListener(this);
+            #endregion
 
-                    tab.SetTabLabelVisibility(TabLayout.TabLabelVisibilityLabeled);
+            #region ConfigManager
+            ConfigurationManager configManager = ConfigurationManager.ConfigManager;
+            var configuration = configManager.BankConfigurationFromJson;
+            #endregion
 
-                    layoutParams.Width = LinearLayoutCompat.LayoutParams.WrapContent;
+            #region ShowDataFromDb
+            await DatesRepositorio.SetDatasFromDB();
+            #endregion
 
-                    layout.LayoutParameters = layoutParams;
-                    var asdf = pager.ChildCount;
-                    //pager.ScrollY = 1;
-                };
-                tabLayout.TabUnselected += (object sender, TabLayout.TabUnselectedEventArgs e) =>
-                {
-                    e.Tab.RemoveBadge();
+            #region Castom Tab
 
-                    var tab = e.Tab;
-                    var layout = tab.View;
-                    tab.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
-                    // layoutParams.Width = LinearLayout.LayoutParams.WrapContent;
-                };
+            tabLayout = FindViewById<TabLayout>(Resource.Id.tabLayout);
+            tabLayout.InlineLabel = true;
+            tabLayout.TabGravity = 0;
 
 
-                adapter = new CustomViewPager2Adapter(this.SupportFragmentManager, this.Lifecycle);
-                tabIcons = new int[]
-                {
+
+            pager = FindViewById<ViewPager2>(Resource.Id.pager);
+            pager.OffscreenPageLimit = 3;//позволяет адакватно реагировать на нажатие кнопок
+
+            tabLayout.TabSelected += (object sender, TabLayout.TabSelectedEventArgs e) =>
+            {
+                var tab = e.Tab;
+                var layout = tab.View;
+
+                var layoutParams = layout.LayoutParameters;// as AndroidX.AppCompat.Widget.LinearLayoutCompat.LayoutParams;
+
+                tab.SetTabLabelVisibility(TabLayout.TabLabelVisibilityLabeled);
+
+                layoutParams.Width = LinearLayoutCompat.LayoutParams.WrapContent;
+
+                layout.LayoutParameters = layoutParams;
+                var asdf = pager.ChildCount;
+                //pager.ScrollY = 1;
+            };
+            tabLayout.TabUnselected += (object sender, TabLayout.TabUnselectedEventArgs e) =>
+            {
+                e.Tab.RemoveBadge();
+
+                var tab = e.Tab;
+                var layout = tab.View;
+                tab.SetTabLabelVisibility(TabLayout.TabLabelVisibilityUnlabeled);
+                // layoutParams.Width = LinearLayout.LayoutParams.WrapContent;
+            };
+
+
+            adapter = new CustomViewPager2Adapter(this.SupportFragmentManager, this.Lifecycle);
+            tabIcons = new int[]
+            {
                     Resource.Mipmap.ic_cash50,
                     Resource.Mipmap.ic_in_deposit50,
                     Resource.Mipmap.ic_cash_out111,
                     Resource.Mipmap.ic_error,
 
-                };
-                pager.Adapter = adapter;
+            };
+            pager.Adapter = adapter;
 
-                new TabLayoutMediator(tabLayout, pager, new CustomStrategy()).Attach();
-                //              //adapter.NotifyDataSetChanged();
+            new TabLayoutMediator(tabLayout, pager, new CustomStrategy()).Attach();
+            //              //adapter.NotifyDataSetChanged();
 
-                #endregion
+            #endregion
 
-                #region ReadSmS
-                //smsFilters.AddRange(configuration.Banks); //This operation took 5420
-                //List<Sms> lst = await GetAllSmsAsync(smsFilters);// This operation took 1356
-               ParseSmsToDbAsync(configuration.Banks);//This operation took 56
+            #region ReadSmS
+            //smsFilters.AddRange(configuration.Banks); //This operation took 5420
+            //List<Sms> lst = await GetAllSmsAsync(smsFilters);// This operation took 1356
+            ParseSmsToDbAsync(configuration.Banks);//This operation took 56
 
-                #endregion
+            #endregion
 
 
             //}
@@ -246,7 +246,7 @@ namespace NavigationDrawerStarter
             if (data != null)
             {
                 await DatesRepositorio.AddDatas(data);//This operation took 10825
-                                                             //               UpdateBadgeToTabs();
+                                                      //               UpdateBadgeToTabs();
             }
         }
 
@@ -295,15 +295,17 @@ namespace NavigationDrawerStarter
         ////            adapter.UpdateFragments();
         //        }
 
-        async Task<bool> PickAndShowFromPdf(PickOptions options)
+        async Task<FileResult> PickAndShowFromPdf(PickOptions options)
         {
-            bool isOk = false;
+
             #region ConfigManager
             ConfigurationManager configManager = ConfigurationManager.ConfigManager;
             var configuration = configManager.BankConfigurationFromJson;
             #endregion
+            string message;
             try
             {
+
                 var result = await FilePicker.PickAsync(options);
                 if (result != null)
                 {
@@ -314,19 +316,23 @@ namespace NavigationDrawerStarter
                                                           //adapter.UpdateFragments();
                                                           //adapter.NotifyDataSetChanged();
                                                           //                    UpdateBadgeToTabs();
-                    isOk = true;
+                    message = "Файл обработан.";
+
                 }
-                return isOk;
+                return result;
             }
             catch (Exception ex)
             {
+                message = "Произошла ошибка";
                 // The user canceled or something went wrong
-                return isOk;
+                return null;
             }
+            Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+            return null;
         }
-        async Task<bool> PickAndShowFromFile(PickOptions options)
+        async Task<FileResult> PickAndShowFromFile(PickOptions options)
         {
-            bool isOk = false;
+            string message;
             try
             {
                 var result = await FilePicker.PickAsync(options);
@@ -338,15 +344,16 @@ namespace NavigationDrawerStarter
                     SerializarionToXml serializer = new SerializarionToXml();
                     var data = serializer.DeserializeFile(result.FullPath);
                     await DatesRepositorio.AddDatas(data.ToList());//This operation took 10825
-                                                                   //                    UpdateBadgeToTabs();
-                    isOk = true;
+                    message = "Файл обработан.";                                             //                    UpdateBadgeToTabs();
+
                 }
-                return isOk;
+                return result;
             }
             catch (Exception ex)
             {
-                // The user canceled or something went wrong
-                return isOk;
+                message = "Произошла ошибка";
+                Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+                return null;
             }
         }
 
@@ -496,9 +503,8 @@ namespace NavigationDrawerStarter
                 };
 
                 //PickAndShowFromPdf(options);
-                string message;
-                message = PickAndShowFromPdf(options).Result ? "Файл обработан." : "Произошла ошибка.";
-                Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+                PickAndShowFromPdf(options);
+                return false;
             }
             if (id == Resource.Id.nav_db_clear)
             {
@@ -519,11 +525,12 @@ namespace NavigationDrawerStarter
                 });
                 builder.SetNegativeButton("Отмена", (c, ev) =>
                 {
-                    return;
+                    return ;
                 });
                 builder.Create();
                 builder.Show();
-                return true;
+                drawer.CloseDrawer(GravityCompat.Start);
+                return false;
             }
 
             if (id == Resource.Id.nav_upload)
@@ -538,8 +545,9 @@ namespace NavigationDrawerStarter
                 string localFilename = $"FinReport{DateTime.Now.ToString().Replace('.', '_').Replace(':', '_')}.xml";
                 string localPath = Path.Combine(documentsPath, localFilename);
 
-                serializer.SaveToFile(localPath);
-
+                var message = serializer.SaveToFile(localPath) ?? "Произошла ошибка";
+                Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+           
             }
             if (id == Resource.Id.nav_restore)
             {
@@ -548,17 +556,20 @@ namespace NavigationDrawerStarter
                     PickerTitle = "@string/select_pdf_report"
                     //FileTypes = customFileType,
                 };
-                string message;
-                message = PickAndShowFromFile(options).Result ? "Файл обработан." : "Произошла ошибка.";
-                Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
+                PickAndShowFromFile(options);
+                drawer.CloseDrawer(GravityCompat.Start);
+                return false;
             }
             if (id == Resource.Id.nav_manage)
             {
                 Intent intent = new Intent(this, typeof(SettingsActivity));
                 StartActivity(intent);
+                drawer.CloseDrawer(GravityCompat.Start);
+                return false;
             }
             drawer.CloseDrawer(GravityCompat.Start);
-            return true;
+
+            return false;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

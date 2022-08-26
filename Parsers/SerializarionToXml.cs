@@ -18,9 +18,9 @@ namespace NavigationDrawerStarter.Parsers
     {
 
         XmlSerializer xmlFormat = new XmlSerializer(typeof(DataItem[]));
-        public void SaveToFile(string filename)
+        public string SaveToFile(string filename)
         {
-           
+
             // сохранение массива в файл
 
 
@@ -31,24 +31,31 @@ namespace NavigationDrawerStarter.Parsers
             //    serializer.Serialize(stringwriter, ggg[2]);
             //    var sdf  =  stringwriter.ToString();
             //}
-
-            using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate))
+            try
             {
-                XmlSerializer xmlFormat = new XmlSerializer(typeof(DataItem[]));
-                xmlFormat.Serialize(fs, DatesRepositorio.DataItems.ToArray());
+                using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate))
+                {
+                    XmlSerializer xmlFormat = new XmlSerializer(typeof(DataItem[]));
+                    xmlFormat.Serialize(fs, DatesRepositorio.DataItems.ToArray());
+                }
+                return filename;
+            }
+            catch
+            {
+                return null;
             }
 
-            
+
         }
         public DataItem[] DeserializeFile(string filename)
         {
+
             using (FileStream fs = new FileStream(filename, FileMode.OpenOrCreate))
             {
-                DataItem[]? dataItems =   xmlFormat.Deserialize(fs) as DataItem[];
+                DataItem[]? dataItems = xmlFormat.Deserialize(fs) as DataItem[];
                 return dataItems;
             }
         }
     }
 }
 
-    

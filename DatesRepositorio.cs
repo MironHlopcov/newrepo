@@ -113,8 +113,10 @@ namespace NavigationDrawerStarter
                     }
 
                     await db.SaveChangesAsync();
-                    return true;
                 }
+                DataItems.Clear();
+                UpdateAutLists(DataItems);
+                return true;
             }
             catch (Exception ex)
             {

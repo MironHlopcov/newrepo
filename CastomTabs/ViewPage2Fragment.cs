@@ -62,6 +62,8 @@ namespace NavigationDrawerStarter
                    UpdateBadgeToTabs((TabLayout)Activity.FindViewById(Resource.Id.tabLayout), Index);
                 return ViewAD;
             }
+           
+            
             private void UpdateBadgeToTabs(TabLayout tabLayout, int index)
             {
                 if (DatesRepositorio.NewDataItems != null)
