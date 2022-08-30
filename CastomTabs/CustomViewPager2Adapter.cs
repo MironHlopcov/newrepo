@@ -29,16 +29,20 @@ namespace NavigationDrawerStarter
                 switch (position)
                 {
                     case 0:
-                        fragment = new ViewPage2Fragment(position, DatesRepositorio.Payments);
+                        if (_fragmentManager.FindFragmentByTag("f0")==null)
+                            fragment = new ViewPage2Fragment(position, DatesRepositorio.Payments);
                         break;
                     case 1:
-                        fragment = new ViewPage2Fragment(position, DatesRepositorio.Deposits);
+                        if (_fragmentManager.FindFragmentByTag("f1") == null)
+                            fragment = new ViewPage2Fragment(position, DatesRepositorio.Deposits);
                         break;
                     case 2:
-                        fragment = new ViewPage2Fragment(position, DatesRepositorio.Cashs);
+                        if (_fragmentManager.FindFragmentByTag("f2") == null)
+                            fragment = new ViewPage2Fragment(position, DatesRepositorio.Cashs);
                         break;
                     case 3:
-                        fragment = new ViewPage2Fragment(position, DatesRepositorio.Unreachable);
+                        if (_fragmentManager.FindFragmentByTag("f3") == null)
+                            fragment = new ViewPage2Fragment(position, DatesRepositorio.Unreachable);
                         break;
                 }
                 return fragment;

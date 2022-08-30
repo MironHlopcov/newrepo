@@ -1,4 +1,5 @@
 ﻿using EfcToXamarinAndroid.Core;
+using NavigationDrawerStarter.Configs.ManagerCore;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -25,6 +26,14 @@ namespace NavigationDrawerStarter.Parsers
             smslist = data;
            
         }
+        public Parser(Sms data, List<BankConfiguration> bankConfigurations)
+        {
+            BankConfigurations = bankConfigurations;
+            Data = new List<DataItem>();
+            smslist.Add(data);
+
+        }
+
         public async Task<List<DataItem>> GetData()
         {
             await SmsToDataItems();

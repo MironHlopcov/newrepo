@@ -50,6 +50,7 @@ namespace NavigationDrawerStarter
 
         //private static List<BankConfiguration> smsFilters = new List<BankConfiguration>();
 
+        private SmsReceiver smsBroadcastReceiver;
 
         protected override async void OnCreate(Bundle savedInstanceState)
         {
@@ -117,6 +118,7 @@ namespace NavigationDrawerStarter
 
             pager = FindViewById<ViewPager2>(Resource.Id.pager);
             pager.OffscreenPageLimit = 3;//позволяет адакватно реагировать на нажатие кнопок
+                                         //pager.SaveEnabled = false;
 
             tabLayout.TabSelected += (object sender, TabLayout.TabSelectedEventArgs e) =>
             {
@@ -163,16 +165,19 @@ namespace NavigationDrawerStarter
             #region ReadSmS
             //smsFilters.AddRange(configuration.Banks); //This operation took 5420
             //List<Sms> lst = await GetAllSmsAsync(smsFilters);// This operation took 1356
-            ParseSmsToDbAsync(configuration.Banks);//This operation took 56
-
+           // ParseSmsToDbAsync(configuration.Banks);///This operation took 56
+            smsBroadcastReceiver = new SmsReceiver();
             #endregion
-
-
             //}
         }
 
-        private void SetSettings()
+        private async void SetSettings()
         {
+            _ = await CheckAndRequestSmsPermission();
+            _ = await CheckAndRequestStorageWritePermission();
+            _ = await CheckAndRequestStorageReadPermission();
+
+
             var prefs = PreferenceManager.GetDefaultSharedPreferences(this);
             object showunreashables;
             prefs.All.TryGetValue("key_showunreashables", out showunreashables);
@@ -193,6 +198,7 @@ namespace NavigationDrawerStarter
                 default:
                     break;
             };
+
         }
 
         #region ViewLifecucle
@@ -206,10 +212,18 @@ namespace NavigationDrawerStarter
         protected override void OnResume()
         {
             base.OnResume();
+            
+            ConfigurationManager configManager = ConfigurationManager.ConfigManager;
+            var configuration = configManager.BankConfigurationFromJson;
+            ParseSmsToDbAsync(configuration.Banks);
+
+            RegisterReceiver(smsBroadcastReceiver, new IntentFilter("android.provider.Telephony.SMS_RECEIVED"));
+
         }
         protected override void OnPause()
         {
             base.OnPause();
+            UnregisterReceiver(smsBroadcastReceiver);
         }
         protected override void OnStop()
         {
@@ -224,14 +238,17 @@ namespace NavigationDrawerStarter
             //outState.PutInt("click_count", _counter);
             //Log.Debug(GetType().FullName, "Activity A - Saving instance state");
             // always call the base implementation!
+            base.OnSaveInstanceState(outState);
 
             var tabSelectedPosition = tabLayout.SelectedTabPosition;
             outState.PutInt("selectedTabPosition", tabSelectedPosition);
-            base.OnSaveInstanceState(outState);
+
+
+
         }
         protected override void OnRestoreInstanceState(Bundle savedInstanceState)
         {
-            // base.OnRestoreInstanceState(savedInstanceState);
+            //base.OnRestoreInstanceState(savedInstanceState);
         }
         #endregion
 
@@ -525,7 +542,7 @@ namespace NavigationDrawerStarter
                 });
                 builder.SetNegativeButton("Отмена", (c, ev) =>
                 {
-                    return ;
+                    return;
                 });
                 builder.Create();
                 builder.Show();
@@ -547,7 +564,7 @@ namespace NavigationDrawerStarter
 
                 var message = serializer.SaveToFile(localPath) ?? "Произошла ошибка";
                 Android.Widget.Toast.MakeText(this, message, Android.Widget.ToastLength.Short).Show();
-           
+
             }
             if (id == Resource.Id.nav_restore)
             {
@@ -570,6 +587,80 @@ namespace NavigationDrawerStarter
             drawer.CloseDrawer(GravityCompat.Start);
 
             return false;
+        }
+
+        public void CheckPermission()
+        {
+            
+        }
+        public async Task<PermissionStatus> CheckAndRequestSmsPermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.Sms>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.Sms>())
+            {
+                // Prompt the user with additional information as to why the permission is needed
+            }
+
+            status = await Permissions.RequestAsync<Permissions.Sms>();
+
+            return status;
+        }
+        public async Task<PermissionStatus> CheckAndRequestStorageReadPermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageRead>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageRead>())
+            {
+                // Prompt the user with additional information as to why the permission is needed
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageRead>();
+
+            return status;
+        }
+        public async Task<PermissionStatus> CheckAndRequestStorageWritePermission()
+        {
+            var status = await Permissions.CheckStatusAsync<Permissions.StorageWrite>();
+
+            if (status == PermissionStatus.Granted)
+                return status;
+
+            if (status == PermissionStatus.Denied && DeviceInfo.Platform == DevicePlatform.iOS)
+            {
+                // Prompt the user to turn on in settings
+                // On iOS once a permission has been denied it may not be requested again from the application
+                return status;
+            }
+
+            if (Permissions.ShouldShowRationale<Permissions.StorageWrite>())
+            {
+                // Prompt the user with additional information as to why the permission is needed
+            }
+
+            status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+
+            return status;
         }
         public override void OnRequestPermissionsResult(int requestCode, string[] permissions, [GeneratedEnum] Android.Content.PM.Permission[] grantResults)
         {

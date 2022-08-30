@@ -3,6 +3,7 @@ using Android.App;
 using Android.OS;
 using Android.Views;
 using Android.Widget;
+using AndroidX.RecyclerView.Widget;
 using EfcToXamarinAndroid.Core;
 using Google.Android.Material.Badge;
 using Google.Android.Material.Tabs;
@@ -46,15 +47,16 @@ namespace NavigationDrawerStarter
                 DataAdapter = listAdapter; //test
                 listViewItems.Adapter = listAdapter;
 
-                listAdapter.OnDataSetChanged += (AndroidX.Fragment.App.Fragment context) =>
-                {
-                    TabLayout tabLayout = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
-                    var tab = tabLayout.GetTabAt(Index);
-                    int oldCount = 0;
-                    int.TryParse(tab.Text.Split(":")[0], out oldCount);
-                    tab.SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
-                    UpdateBadgeToTabs(tabLayout, Index);
-                };
+                //listAdapter.OnDataSetChanged += (AndroidX.Fragment.App.Fragment context) =>
+                //{
+                //    TabLayout tabLayout = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
+                //    var tab = tabLayout.GetTabAt(Index);
+                //    int oldCount = 0;
+                //    int.TryParse(tab.Text.Split(":")[0], out oldCount);
+                //    tab.SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
+                //    UpdateBadgeToTabs(tabLayout, Index);
+                //};
+                listAdapter.OnDataSetChanged += ListAdapter_OnDataSetChanged;
 
                 TabLayout listView = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
                 listView.GetTabAt(Index).SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
@@ -62,8 +64,23 @@ namespace NavigationDrawerStarter
                    UpdateBadgeToTabs((TabLayout)Activity.FindViewById(Resource.Id.tabLayout), Index);
                 return ViewAD;
             }
-           
-            
+
+            private void ListAdapter_OnDataSetChanged(AndroidX.Fragment.App.Fragment context)
+            {
+                TabLayout tabLayout = (TabLayout)Activity.FindViewById(Resource.Id.tabLayout);
+                var tab = tabLayout.GetTabAt(Index);
+                int oldCount = 0;
+                int.TryParse(tab.Text.Split(":")[0], out oldCount);
+                tab.SetText($"{ListData.Count}: Sum={ListData.Select(x => x.Sum).Sum()}");
+                UpdateBadgeToTabs(tabLayout, Index);
+            }
+
+            public override void OnDestroyView()
+            {
+                this.DataAdapter.OnDataSetChanged-= ListAdapter_OnDataSetChanged;
+                base.OnDestroyView();
+            }
+
             private void UpdateBadgeToTabs(TabLayout tabLayout, int index)
             {
                 if (DatesRepositorio.NewDataItems != null)
@@ -271,11 +288,13 @@ namespace NavigationDrawerStarter
             public override void OnSaveInstanceState(Bundle outState)
             {
                 base.OnSaveInstanceState(outState);
+                //outState.PutInt("MainActivity", act);
             }
             public override void SetInitialSavedState(SavedState state)
             {
                 base.SetInitialSavedState(state);
             }
+            
         }
     }
 

@@ -45,7 +45,7 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugSymbols>True</DebugSymbols>
     <DebugType>portable</DebugType>
-    <Optimize>True</Optimize>
+    <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
@@ -54,6 +54,13 @@
     <AndroidUseSharedRuntime>False</AndroidUseSharedRuntime>
     <AndroidLinkMode>SdkOnly</AndroidLinkMode>
     <EmbedAssembliesIntoApk>True</EmbedAssembliesIntoApk>
+    <AotAssemblies>false</AotAssemblies>
+    <EnableLLVM>false</EnableLLVM>
+    <AndroidEnableProfiledAot>false</AndroidEnableProfiledAot>
+    <BundleAssemblies>false</BundleAssemblies>
+    <AndroidLinkSkip>
+    </AndroidLinkSkip>
+    <MandroidI18n />
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
@@ -75,6 +82,7 @@
     <Compile Include="Configs\ManagerCore\ConfigurationManager.cs" />
     <Compile Include="DatesRepositorio.cs" />
     <Compile Include="Enums\CategoryTyps.cs" />
+    <Compile Include="Parsers\SmsReceiver.cs" />
     <Compile Include="Settings\BankConfigActivity.cs" />
     <Compile Include="Settings\CustomBankConfigAdapter.cs" />
     <Compile Include="Settings\SelectBankItemDialog.cs" />
