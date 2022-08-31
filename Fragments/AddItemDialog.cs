@@ -208,7 +208,6 @@ namespace NavigationDrawerStarter.Fragments
         {
 
         }
-
         public override void OnViewCreated(View view, Bundle savedInstanceState)
         {
             base.OnViewCreated(view, savedInstanceState);
@@ -217,7 +216,6 @@ namespace NavigationDrawerStarter.Fragments
             toolbar.InflateMenu(Resource.Menu.addItem_dialog);
             toolbar.MenuItemClick += Toolbar_MenuItemClick;
         }
-
         private void Toolbar_MenuItemClick(object sender, Toolbar.MenuItemClickEventArgs e)
         {
             bool isError = false;
